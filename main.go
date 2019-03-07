@@ -1,52 +1,86 @@
 package main
 
 import (
-	"encoding/json"
-	"fmt"
-	"io/ioutil"
+	"flag"
+	"gobirthday/birthday"
 	"time"
+	"os"
+	"os/signal"
 
-	"github.com/Sirupsen/logrus"
+	"github.com/sirupsen/logrus"
+	"github.com/robfig/cron"
 )
 
-// Contact is a contact struct
-type Contact struct {
-	Firstname string `json:"firstname"`
-	Lastname  string `json:"lastname"`
-	Birthdate string `json:"birthdate"`
-}
+var (
+	logging       = flag.String("logging", "info", "Logging level")
+	contactsFile  = flag.String("contacts_file", "contacts.json", "Contacts")
+	providersFile = flag.String("providers_file", "providers.json", "Providers")
+	cronExp = flag.String("cron_exp", "0 8 * * *", "Cron ?")
+	signalChan   = make(chan os.Signal, 1)
+	cleanupDone  = make(chan bool)
+)
 
-// ParseJSON contacts file
-func ParseJSON(filename string) ([]Contact, error) {
-	file, err := ioutil.ReadFile(filename)
-	if err != nil {
-		return nil, err
+func init() {
+	// Parse the flags
+	flag.Parse()
+
+	// Set localtime to UTC
+	time.Local = time.UTC
+
+	// Set the logging level
+	switch *logging {
+	case "debug":
+		logrus.SetLevel(logrus.DebugLevel)
+	case "info":
+		logrus.SetLevel(logrus.InfoLevel)
+	case "warn":
+		logrus.SetLevel(logrus.WarnLevel)
+	case "error":
+		logrus.SetLevel(logrus.ErrorLevel)
+	default:
+		logrus.SetLevel(logrus.InfoLevel)
 	}
 
-	var contacts []Contact
+	// Set the TextFormatter
+	logrus.SetFormatter(&logrus.TextFormatter{
+		DisableColors: true,
+	})
 
-	json.Unmarshal(file, &contacts)
-
-	return contacts, nil
+	logrus.Infoln("gobirthday is starting")
 }
 
 func main() {
 	// Parse the contacts file
-	list, err := ParseJSON("contacts.json")
+	logrus.Infoln("Creating the GoBirthday")
+	gb, err := birthday.NewGoBirthday(*contactsFile, *providersFile, birthday.BirthdateDefaultFormat)
 	if err != nil {
-		logrus.Fatal("Error while parsing the JSON file : ", err)
+		logrus.Fatalln("Error while creating the GoBirthday : ", err)
 	}
-	fmt.Printf("Results: %v\n", list)
 
-	// Search for a birthday to wish
-	for _, contact := range list {
-		parsedBirthdate, err := time.Parse("02/01/2006", contact.Birthdate)
-		if err != nil {
-			logrus.Errorln("Error while parsing the JSON file : ", err)
-		}
+	// Create the CRON
+	logrus.Infoln("Creating the CRON")
+	c := cron.New()
+	c.AddFunc(*cronExp, gb.Notify)
+	c.Start()
+	logrus.Infoln("Successfully created the CRON")
 
-		if parsedBirthdate.Day() == time.Now().Day() && parsedBirthdate.Month() == time.Now().Month() {
-			logrus.Infoln("Today it is", contact.Firstname, "birthday !")
+	// Handle KILL or CTRL+C
+	signal.Notify(signalChan, os.Kill, os.Interrupt)
+	go func() {
+		for range signalChan {
+			logrus.WithFields(logrus.Fields{
+				"channel": "system",
+			}).Infoln("Received an interrupt, stopping services...")
+
+			c.Stop()
+
+			logrus.WithFields(logrus.Fields{
+				"channel": "system",
+			}).Infoln("Services stopped")
+
+			cleanupDone <- true
 		}
-	}
+	}()
+
+	<-cleanupDone
 }
