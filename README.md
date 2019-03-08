@@ -9,6 +9,50 @@
 You do not have a Facebook account ? You do not have a smartphone ? Then you do not wish any birthday except your parents, do you ?  
 This software is for you.
 
+## Features
+
+### Contacts
+
+Contacts list must be as follow :
+
+```json
+[
+	{
+		"firstname": "Daniel",
+		"lastname": "Doe",
+		"birthdate": "08/03"
+	},
+	{
+		"firstname": "Henry",
+		"lastname": "Doe",
+		"birthdate": "31/01/1951"
+	},
+	{
+		"firstname": "John",
+		"lastname": "Doe",
+		"birthdate": "08/04/1951"
+	}
+]
+```
+
+### Providers
+
+Providers are used to send notifications (SMS, email, ..).  
+Providers list must be as follow :
+
+```json
+[
+  {
+    "type": "sms",
+    "vendor": "free",
+    "settings": {
+      "user": "xxxxxxxx",
+      "pass": "xxxxxxx"
+    }
+  }
+]
+```
+
 ## Usage
 
 ### As a software
