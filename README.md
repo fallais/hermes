@@ -63,6 +63,10 @@ Providers list must be as follow :
 ]
 ```
 
+### CRON
+
+CRON expression can be provided if you want to control the time when you receive the notification. If you need help with CRON expression : [CronTabGuru](https://crontab.guru/)
+
 ## Usage
 
 ### As a software
