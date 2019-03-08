@@ -18,12 +18,12 @@ Contacts list must be as follow :
 
 ```json
 [
-	{
-		"firstname": "Daniel",
-		"lastname": "Doe",
-		"birthdate": "08/03"
-	},
-	{
+  {
+    "firstname": "Daniel",
+    "lastname": "Doe",
+    "birthdate": "08/03"
+  },
+  {
 		"firstname": "Henry",
 		"lastname": "Doe",
 		"birthdate": "31/01/1951"
@@ -38,7 +38,16 @@ Contacts list must be as follow :
 
 ### Providers
 
-Providers are used to send notifications (SMS, email, ..).  
+Providers are used to send notifications, it could be one of the following :
+
+- SMS
+  - Free
+  - Orange
+  - SFR
+- Email
+- Webhook
+- etc..
+
 Providers list must be as follow :
 
 ```json

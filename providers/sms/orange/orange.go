@@ -67,7 +67,7 @@ func NewProvider(settings map[string]interface{}) providers.Provider {
 
 	return &orange{
 		client: client,
-		url:    "https://smsapi.orange-mobile.fr",
+		url:    "https://api.orange.com",
 		user:   user,
 		pass:   pass,
 	}
@@ -88,9 +88,9 @@ func (s *orange) SendNotification(firstname, lastname string, age int) error {
 	if err != nil {
 		return fmt.Errorf("Error while parsing the URL : %s", err)
 	}
-	reqURL.Path += "/sendmsg"
+	reqURL.Path += "/oauth/v2/token"
 	parameters := url.Values{}
-	parameters.Add("user", s.user)
+	parameters.Add("grant_type", "client_credentials")
 	parameters.Add("pass", s.pass)
 	parameters.Add("msg", body)
 	reqURL.RawQuery = parameters.Encode()
