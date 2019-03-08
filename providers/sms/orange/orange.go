@@ -17,6 +17,12 @@ import (
 // Structure
 //------------------------------------------------------------------------------
 
+// Type is the type of the provider.
+const Type = "SMS"
+
+// Vendor is the vendor of the provider.
+const Vendor = "Orange"
+
 type orange struct {
 	client *http.Client
 	url    string
@@ -114,4 +120,14 @@ func (s *orange) SendNotification(firstname, lastname string, age int) error {
 	}
 
 	return nil
+}
+
+// Type returns the type.
+func (s *orange) Type() string {
+	return Type
+}
+
+// Vendor returns the vendor.
+func (s *orange) Vendor() string {
+	return Vendor
 }

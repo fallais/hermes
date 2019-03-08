@@ -12,5 +12,5 @@ func calculateAge(birthdate models.Birthdate) int {
 		return 0
 	}
 
-	return time.Now().Year()-birthdate.Year
+	return time.Now().Year() - birthdate.Year
 }

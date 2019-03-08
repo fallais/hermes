@@ -12,7 +12,7 @@ var (
 	logging       = flag.String("logging", "info", "Logging level")
 	contactsFile  = flag.String("contacts_file", "contacts.json", "Contacts")
 	providersFile = flag.String("providers_file", "providers.json", "Providers")
-	cronExp = flag.String("cron_exp", "50 15 * * *", "Cron ?")
+	cronExp       = flag.String("cron_exp", "50 15 * * *", "Cron ?")
 )
 
 func init() {

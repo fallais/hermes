@@ -63,7 +63,7 @@ func (gb *GoBirthday) AddContacts(filename string) error {
 		if !r.MatchString(contact.Birthdate) {
 			logrus.WithFields(logrus.Fields{
 				"firstname": contact.Firstname,
-				"lastname": contact.Lastname,
+				"lastname":  contact.Lastname,
 				"birthdate": contact.Birthdate,
 			}).Errorln("the birthdate is incorrect")
 
@@ -102,7 +102,7 @@ func (gb *GoBirthday) AddContacts(filename string) error {
 		// Create the contact
 		c := &models.Contact{
 			Firstname: contact.Firstname,
-			Lastname: contact.Lastname,
+			Lastname:  contact.Lastname,
 			Birthdate: bd,
 		}
 

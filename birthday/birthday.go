@@ -1,15 +1,15 @@
 package birthday
 
 import (
-	"time"
 	"os"
 	"os/signal"
+	"time"
 
-	"gobirthday/providers"
 	"gobirthday/models"
+	"gobirthday/providers"
 
-	"github.com/sirupsen/logrus"
 	"github.com/robfig/cron"
+	"github.com/sirupsen/logrus"
 )
 
 // BirthdateDefaultFormat is the birthdate format.
@@ -21,10 +21,10 @@ const BirthdateDefaultFormat = "02/01/2006"
 
 // GoBirthday is a birthday reminder that allows you to not forget your loved ones.
 type GoBirthday struct {
-	contacts         []*models.Contact
-	providers        []providers.Provider
-	cronExp string
-	cron *cron.Cron
+	contacts  []*models.Contact
+	providers []providers.Provider
+	cronExp   string
+	cron      *cron.Cron
 }
 
 //------------------------------------------------------------------------------
@@ -35,7 +35,7 @@ type GoBirthday struct {
 func NewGoBirthday(cronExp string) (*GoBirthday, error) {
 	// Create the object
 	gb := &GoBirthday{
-		cron: cron.New(),
+		cron:    cron.New(),
 		cronExp: cronExp,
 	}
 
@@ -56,18 +56,30 @@ func (gb *GoBirthday) Notify() {
 			age := calculateAge(contact.Birthdate)
 
 			logrus.WithFields(logrus.Fields{
-				"age":   age,
+				"age":       age,
 				"firstname": contact.Firstname,
-				"lastname": contact.Lastname,
+				"lastname":  contact.Lastname,
 			}).Infoln("Birthday to wish !")
 
 			// Send all the notifications
 			for _, provider := range gb.providers {
+				logrus.WithFields(logrus.Fields{
+					"provider_type":   provider.Type(),
+					"provider_vendor": provider.Vendor(),
+				}).Infoln("Sending the notification")
 				err := provider.SendNotification(contact.Firstname, contact.Lastname, age)
 				if err != nil {
-					logrus.Errorln("Error while sending the notification :", err)
+					logrus.WithFields(logrus.Fields{
+						"provider_type":   provider.Type(),
+						"provider_vendor": provider.Vendor(),
+					}).Errorln("Error while sending the notification :", err)
 					continue
 				}
+
+				logrus.WithFields(logrus.Fields{
+					"provider_type":   provider.Type(),
+					"provider_vendor": provider.Vendor(),
+				}).Infoln("Successfully sent the notification")
 			}
 		}
 	}
@@ -83,7 +95,7 @@ func (gb *GoBirthday) NbProviders() int {
 	return len(gb.providers)
 }
 
-// Start starts the program.
+// Start starts the program and wait for OS signals.
 func (gb *GoBirthday) Start() {
 	signalChan := make(chan os.Signal, 1)
 	cleanupDone := make(chan bool)
@@ -91,7 +103,7 @@ func (gb *GoBirthday) Start() {
 	// Add the function to the CRON
 	gb.Notify()
 	logrus.WithFields(logrus.Fields{
-		"cron_exp":   gb.cronExp,
+		"cron_exp": gb.cronExp,
 	}).Infoln("Adding function to the CRON")
 	gb.cron.AddFunc(gb.cronExp, gb.Notify)
 

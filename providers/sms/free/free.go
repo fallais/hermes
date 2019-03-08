@@ -17,6 +17,12 @@ import (
 // Structure
 //------------------------------------------------------------------------------
 
+// Type is the type of the provider.
+const Type = "SMS"
+
+// Vendor is the vendor of the provider.
+const Vendor = "Free"
+
 type free struct {
 	client *http.Client
 	url    string
@@ -114,4 +120,14 @@ func (s *free) SendNotification(firstname, lastname string, age int) error {
 	}
 
 	return nil
+}
+
+// Type returns the type.
+func (s *free) Type() string {
+	return Type
+}
+
+// Vendor returns the vendor.
+func (s *free) Vendor() string {
+	return Vendor
 }
