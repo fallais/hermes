@@ -7,7 +7,7 @@
 ## Why ?
 
 You do not have a Facebook account ? You do not have a smartphone ? Then you do not wish any birthday except your parents, do you ?  
-This software is for you.
+This software is for you !
 
 ## Features
 
@@ -75,6 +75,6 @@ Software can be used as follow : `gobirthday --contacts_file /app/contacts.json 
 
 ### As a Docker container
 
-It can (or must) be deployed in a Docker container as follow :
+It can also be deployed in a Docker container, it is only 20MB.
 
 `docker run -d --name gobirthday -e CRON="30 11 * * *" -v contacts.json:/app/contacts.json -v providers.json:/app/providers.json fallais/gobirthday`
