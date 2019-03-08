@@ -13,6 +13,7 @@ This software is for you.
 
 ### Contacts
 
+A contact is defined by a firstname, a lastname and a birthdate (DD/MM/YYYY or DD/MM).  
 Contacts list must be as follow :
 
 ```json
@@ -63,4 +64,4 @@ Software can be used as follow : `gobirthday --contacts_file /app/contacts.json 
 
 It can (or must) be deployed in a Docker container as follow :
 
-`docker run -d --name gobirthday -v contacts.json:/app/contacts.json -v providers.json:/app/providers.json fallais/gobirthday`
+`docker run -d --name gobirthday -e CRON="30 11 * * *" -v contacts.json:/app/contacts.json -v providers.json:/app/providers.json fallais/gobirthday`
