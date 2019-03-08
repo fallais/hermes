@@ -89,6 +89,7 @@ func (gb *GoBirthday) Start() {
 	cleanupDone := make(chan bool)
 
 	// Add the function to the CRON
+	gb.Notify()
 	logrus.WithFields(logrus.Fields{
 		"cron_exp":   gb.cronExp,
 	}).Infoln("Adding function to the CRON")
