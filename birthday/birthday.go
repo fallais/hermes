@@ -1,90 +1,42 @@
 package birthday
 
 import (
-	"encoding/json"
-	"fmt"
-	"io/ioutil"
-	"strings"
 	"time"
+	"os"
+	"os/signal"
 
 	"gobirthday/providers"
-	"gobirthday/providers/sms/free"
+	"gobirthday/models"
 
 	"github.com/sirupsen/logrus"
+	"github.com/robfig/cron"
 )
+
+// BirthdateDefaultFormat is the birthdate format.
+const BirthdateDefaultFormat = "02/01/2006"
 
 //------------------------------------------------------------------------------
 // Structure
 //------------------------------------------------------------------------------
 
-// GoBirthday is a birthday reminder.
+// GoBirthday is a birthday reminder that allows you to not forget your loved ones.
 type GoBirthday struct {
-	contacts         []*Contact
+	contacts         []*models.Contact
 	providers        []providers.Provider
-	birthdateFormat  string
+	cronExp string
+	cron *cron.Cron
 }
 
 //------------------------------------------------------------------------------
 // Factory
 //------------------------------------------------------------------------------
 
-// NewGoBirthday returns a valid GoBirthday instance
-func NewGoBirthday(contactsFile, providersFile, birthdateFormat string) (*GoBirthday, error) {
-	var contacts []*Contact
-	var providersTmp []Provider
-
-	// Read the configuration file
-	file, err := ioutil.ReadFile(contactsFile)
-	if err != nil {
-		return nil, fmt.Errorf("Error while reading the configuration file : %s", err)
-	}
-
-	// Unmarshal the configuration file
-	err = json.Unmarshal(file, &contacts)
-	if err != nil {
-		return nil, fmt.Errorf("Error while unmarshalling the configuration : %s", err)
-	}
-
-	// Read the configuration file
-	file, err = ioutil.ReadFile(providersFile)
-	if err != nil {
-		return nil, fmt.Errorf("Error while reading the providers file : %s", err)
-	}
-
-	// Unmarshal the configuration file
-	err = json.Unmarshal(file, &providersTmp)
-	if err != nil {
-		return nil, fmt.Errorf("Error while unmarshalling the providers : %s", err)
-	}
-
-	// Create the providers
-	var prvds []providers.Provider
-	for _, provider := range providersTmp {
-		switch provider.Type {
-		case "sms":
-			switch provider.Vendor {
-			case "free":
-				prvd := free.NewProvider(provider.Settings)
-				prvds = append(prvds, prvd)
-			default:
-				return nil, fmt.Errorf("Wrong vendor of SMS provider : %s", provider.Type)
-			}
-		default:
-			return nil, fmt.Errorf("Wrong type of provider : %s", provider.Type)
-		}
-	}
-
+// NewGoBirthday returns new GoBirthday with the given CRON expression.
+func NewGoBirthday(cronExp string) (*GoBirthday, error) {
 	// Create the object
 	gb := &GoBirthday{
-		contacts:  contacts,
-		providers: prvds,
-	}
-
-	// Check the birthdate format
-	if len(strings.TrimSpace(birthdateFormat)) == 0 {
-		gb.birthdateFormat = BirthdateDefaultFormat
-	} else {
-		gb.birthdateFormat = birthdateFormat
+		cron: cron.New(),
+		cronExp: cronExp,
 	}
 
 	return gb, nil
@@ -98,26 +50,69 @@ func NewGoBirthday(contactsFile, providersFile, birthdateFormat string) (*GoBirt
 func (gb *GoBirthday) Notify() {
 	// Process all the contacts
 	for _, contact := range gb.contacts {
-		// Parse the birthdate
-		birthdateParsed, err := time.Parse(gb.birthdateFormat, contact.Birthdate)
-		if err != nil {
-			logrus.Errorln("Error while parsing the birthdate :", err)
-			continue
-		}
-
 		// Check the birthdate
-		if birthdateParsed.Day() == time.Now().Day() && birthdateParsed.Month() == time.Now().Month() {
-			fmt.Println("Today it is", contact.Firstname, "birthday !", time.Now().Year()-birthdateParsed.Year(), "years old !")
+		if contact.Birthdate.Day == time.Now().Day() && contact.Birthdate.Month == int(time.Now().Month()) {
+			// Calculate the age
+			age := calculateAge(contact.Birthdate)
+
+			logrus.WithFields(logrus.Fields{
+				"age":   age,
+				"firstname": contact.Firstname,
+				"lastname": contact.Lastname,
+			}).Infoln("Birthday to wish !")
 
 			// Send all the notifications
 			for _, provider := range gb.providers {
-				err := provider.SendNotification(contact.Firstname, contact.Lastname, birthdateParsed)
+				err := provider.SendNotification(contact.Firstname, contact.Lastname, age)
 				if err != nil {
 					logrus.Errorln("Error while sending the notification :", err)
 					continue
 				}
 			}
 		}
-
 	}
+}
+
+// NbContacts return the number of contacts.
+func (gb *GoBirthday) NbContacts() int {
+	return len(gb.contacts)
+}
+
+// NbProviders return the number of providers.
+func (gb *GoBirthday) NbProviders() int {
+	return len(gb.providers)
+}
+
+// Start starts the program.
+func (gb *GoBirthday) Start() {
+	signalChan := make(chan os.Signal, 1)
+	cleanupDone := make(chan bool)
+
+	// Add the function to the CRON
+	logrus.WithFields(logrus.Fields{
+		"cron_exp":   gb.cronExp,
+	}).Infoln("Adding function to the CRON")
+	gb.cron.AddFunc(gb.cronExp, gb.Notify)
+
+	// Start the CRON
+	logrus.Infoln("Starting the CRON")
+	gb.cron.Start()
+
+	// Handle KILL or CTRL+C
+	signal.Notify(signalChan, os.Kill, os.Interrupt)
+	go func() {
+		for range signalChan {
+			logrus.Infoln("Received an interrupt, stopping services...")
+
+			gb.cron.Stop()
+
+			logrus.Infoln("Services stopped")
+
+			cleanupDone <- true
+		}
+	}()
+
+	logrus.Infoln("Waiting for birthdays to wish")
+
+	<-cleanupDone
 }

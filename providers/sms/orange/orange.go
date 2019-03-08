@@ -1,4 +1,4 @@
-package free
+package orange
 
 import (
 	"crypto/tls"
@@ -17,7 +17,7 @@ import (
 // Structure
 //------------------------------------------------------------------------------
 
-type free struct {
+type orange struct {
 	client *http.Client
 	url    string
 	user   string
@@ -65,9 +65,9 @@ func NewProvider(settings map[string]interface{}) providers.Provider {
 		}
 	}
 
-	return &free{
+	return &orange{
 		client: client,
-		url:    "https://smsapi.free-mobile.fr",
+		url:    "https://smsapi.orange-mobile.fr",
 		user:   user,
 		pass:   pass,
 	}
@@ -78,7 +78,7 @@ func NewProvider(settings map[string]interface{}) providers.Provider {
 //------------------------------------------------------------------------------
 
 // SendNotification sends a notification.
-func (s *free) SendNotification(firstname, lastname string, age int) error {
+func (s *orange) SendNotification(firstname, lastname string, age int) error {
 	// Craft the message body
 	body := "This is the birthday of " + firstname + " " + lastname + " ! " + strconv.Itoa(age) + " years old !"
 

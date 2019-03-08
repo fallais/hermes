@@ -4,20 +4,15 @@ import (
 	"flag"
 	"gobirthday/birthday"
 	"time"
-	"os"
-	"os/signal"
 
 	"github.com/sirupsen/logrus"
-	"github.com/robfig/cron"
 )
 
 var (
 	logging       = flag.String("logging", "info", "Logging level")
 	contactsFile  = flag.String("contacts_file", "contacts.json", "Contacts")
 	providersFile = flag.String("providers_file", "providers.json", "Providers")
-	cronExp = flag.String("cron_exp", "0 8 * * *", "Cron ?")
-	signalChan   = make(chan os.Signal, 1)
-	cleanupDone  = make(chan bool)
+	cronExp = flag.String("cron_exp", "40 14 * * *", "Cron ?")
 )
 
 func init() {
@@ -52,35 +47,31 @@ func init() {
 func main() {
 	// Parse the contacts file
 	logrus.Infoln("Creating the GoBirthday")
-	gb, err := birthday.NewGoBirthday(*contactsFile, *providersFile, birthday.BirthdateDefaultFormat)
+	gb, err := birthday.NewGoBirthday(*cronExp)
 	if err != nil {
-		logrus.Fatalln("Error while creating the GoBirthday : ", err)
+		logrus.Fatalf("Error while creating the GoBirthday : %s", err)
 	}
 
-	// Create the CRON
-	logrus.Infoln("Creating the CRON")
-	c := cron.New()
-	c.AddFunc(*cronExp, gb.Notify)
-	c.Start()
-	logrus.Infoln("Successfully created the CRON")
+	// Add the contacts
+	logrus.Infoln("Adding the contacts")
+	err = gb.AddContacts(*contactsFile)
+	if err != nil {
+		logrus.Fatalf("Error while adding the contacts : %s", err)
+	}
+	logrus.WithFields(logrus.Fields{
+		"nb_contacts": gb.NbContacts(),
+	}).Infoln("Successfully added the contacts")
 
-	// Handle KILL or CTRL+C
-	signal.Notify(signalChan, os.Kill, os.Interrupt)
-	go func() {
-		for range signalChan {
-			logrus.WithFields(logrus.Fields{
-				"channel": "system",
-			}).Infoln("Received an interrupt, stopping services...")
+	// Add the providers
+	logrus.Infoln("Adding the providers")
+	err = gb.AddProviders(*providersFile)
+	if err != nil {
+		logrus.Fatalf("Error while adding the providers : %s", err)
+	}
+	logrus.WithFields(logrus.Fields{
+		"nb_providers": gb.NbProviders(),
+	}).Infoln("Successfully added the providers")
 
-			c.Stop()
-
-			logrus.WithFields(logrus.Fields{
-				"channel": "system",
-			}).Infoln("Services stopped")
-
-			cleanupDone <- true
-		}
-	}()
-
-	<-cleanupDone
+	// Start
+	gb.Start()
 }
