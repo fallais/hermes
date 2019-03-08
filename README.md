@@ -4,6 +4,11 @@
 
 **GoBirthday** is a tool written in **Go** that reminds you all birthdays that you need to wish !
 
+## Why ?
+
+You do not have a Facebook account ? You do not have a smartphone ? Then you do not wish any birthday except your parents, do you ?  
+This software is for you.
+
 ## Usage
 
 ### As a software
