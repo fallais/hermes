@@ -1,6 +1,6 @@
 FROM golang:alpine AS build-env
 ADD . /src
-RUN cd /src && go build -o gobirthday
+RUN cd /src && go get -d -v && go build -o gobirthday
 
 FROM frolvlad/alpine-glibc:latest
 LABEL maintainer="francois.allais@hotmail.com"
