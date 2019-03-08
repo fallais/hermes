@@ -76,3 +76,19 @@ It can be used as follow : `gobirthday --cron_exp="30 11 * * *" --contacts_file 
 It can also be deployed in a Docker container, it is only 20MB.
 
 `docker run -d --name gobirthday -e CRON="30 11 * * *" -v contacts.json:/app/contacts.json -v providers.json:/app/providers.json fallais/gobirthday`
+
+## Contributing
+
+1. Fork it!
+2. Create your feature branch: `git checkout -b my-new-feature`
+3. Commit your changes: `git commit -am 'Add some feature'`
+4. Push to the branch: `git push origin my-new-feature`
+5. Submit a pull request
+
+## Credits
+
+Implemented by François Allais
+
+## License
+
+See `LICENSE`.
