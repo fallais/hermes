@@ -6,15 +6,13 @@
 
 ## Why ?
 
-You do not have a Facebook account ? You do not have a smartphone ? Then you do not wish any birthday except your parents, do you ?  
-This software is for you !
+You do not have a Facebook account ? You do not have a smartphone ? Then you do not wish any birthday except your parents, do you ? This software is for you !
 
 ## Features
 
 ### Contacts
 
-A contact is defined by a firstname, a lastname and a birthdate (DD/MM/YYYY or DD/MM).  
-Contacts list must be as follow :
+A **contact** is defined by a *firstname*, a *lastname* and a *birthdate (DD/MM/YYYY or DD/MM)*. Contacts list must be as follow :
 
 ```json
 [
@@ -24,31 +22,31 @@ Contacts list must be as follow :
     "birthdate": "08/03"
   },
   {
-		"firstname": "Henry",
-		"lastname": "Doe",
-		"birthdate": "31/01/1951"
-	},
-	{
-		"firstname": "John",
-		"lastname": "Doe",
-		"birthdate": "08/04/1951"
-	}
+    "firstname": "Henry",
+    "lastname": "Doe",
+    "birthdate": "31/01/1951"
+  },
+  {
+    "firstname": "John",
+    "lastname": "Doe",
+    "birthdate": "08/04/1951"
+  }
 ]
 ```
 
 ### Providers
 
-Providers are used to send notifications, it could be one of the following :
+A **provider** is used to send notifications, it could be one of the following :
 
 - SMS
   - Free
-  - Orange
-  - SFR
-- Email
-- Webhook
+  - Orange *(not yet)*
+  - SFR *(not yet)*
+- Email *(not yet)*
+- Webhook *(not yet)*
 - etc..
 
-Providers list must be as follow :
+The list of providers must be as follow :
 
 ```json
 [
@@ -65,13 +63,13 @@ Providers list must be as follow :
 
 ### CRON
 
-CRON expression can be provided if you want to control the time when you receive the notification. If you need help with CRON expression : [CronTabGuru](https://crontab.guru/)
+A **CRON expression** can be provided if you want to control the time when you receive the notification. If you need help with CRON expression : [CronTabGuru](https://crontab.guru/)
 
 ## Usage
 
 ### As a software
 
-Software can be used as follow : `gobirthday --contacts_file /app/contacts.json --providers_file /app/providers.json`
+It can be used as follow : `gobirthday --cron_exp="30 11 * * *" --contacts_file /app/contacts.json --providers_file /app/providers.json`
 
 ### As a Docker container
 
