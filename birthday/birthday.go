@@ -25,6 +25,7 @@ type GoBirthday struct {
 	cronExp         string
 	cron            *cron.Cron
 	handleLeapYears bool
+	runOnStartup bool
 }
 
 //------------------------------------------------------------------------------
@@ -32,12 +33,13 @@ type GoBirthday struct {
 //------------------------------------------------------------------------------
 
 // NewGoBirthday returns new GoBirthday with the given CRON expression.
-func NewGoBirthday(cronExp string, handleLeapYears bool) (*GoBirthday, error) {
+func NewGoBirthday(cronExp string, handleLeapYears, runOnStartup bool) (*GoBirthday, error) {
 	// Create the object
 	gb := &GoBirthday{
 		cron:            cron.New(),
 		cronExp:         cronExp,
 		handleLeapYears: handleLeapYears,
+		runOnStartup: runOnStartup,
 	}
 
 	return gb, nil
@@ -98,8 +100,12 @@ func (gb *GoBirthday) Start() {
 	signalChan := make(chan os.Signal, 1)
 	cleanupDone := make(chan bool)
 
+	// Run on startup
+	if gb.runOnStartup {
+		gb.Notify()
+	}
+
 	// Add the function to the CRON
-	gb.Notify()
 	logrus.WithFields(logrus.Fields{
 		"cron_exp": gb.cronExp,
 	}).Infoln("Adding function to the CRON")
