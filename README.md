@@ -94,7 +94,41 @@ It can be used as follow : `gobirthday --cron_exp="30 11 * * *" --contacts_file 
 
 It can also be deployed in a Docker container, it is only 20MB.
 
-`docker run -d --name gobirthday -e CRON="30 11 * * *" -v contacts.json:/app/contacts.json -v providers.json:/app/providers.json fallais/gobirthday`
+`docker run -d --name gobirthday -e CRON_EXP="30 11 * * *" -v contacts.json:/app/contacts.json -v providers.json:/app/providers.json fallais/gobirthday`
+
+### With docker-compose
+
+If you use the SMTP provider, you may want to use `docker-compose` :
+
+```yaml
+version: "3"
+
+services:
+  plex:
+    image: fallais/gobirthday
+    container_name: gobirthday
+    restart: always
+    environment:
+      - HANDLE_LEAP_YEARS=true
+      - RUN_ON_STARTUP=true
+      - CRON_EXP=50 15 * * *
+    volumes:
+      - contacts.json:/app/contacts.json
+      - providers.json:/app/providers.json
+    networks:
+      main:
+        aliases:
+          - gobirthday
+  
+  smtp:
+    image: namshi/smtp
+    container_name: smtp
+    restart: always
+    networks:
+      main:
+        aliases:
+          - smtp
+```
 
 ## Contributing
 
