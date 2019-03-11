@@ -10,6 +10,7 @@ import (
 	"gobirthday/models"
 	"gobirthday/providers/sms/free"
 	"gobirthday/providers/sms/orange"
+	"gobirthday/providers/email"
 
 	"github.com/sirupsen/logrus"
 )
@@ -19,6 +20,8 @@ type Contact struct {
 	Firstname string `json:"firstname"`
 	Lastname  string `json:"lastname"`
 	Birthdate string `json:"birthdate"`
+	Nickname string `json:"nickname"`
+	Description string `json:"description"`
 }
 
 // Provider is a provider.
@@ -50,9 +53,6 @@ func (gb *GoBirthday) AddContacts(filename string) error {
 
 	// Process the contacts
 	for _, contact := range contacts {
-		// Create the birthdate
-		bd := models.Birthdate{}
-
 		// Compile the regex
 		r, err := regexp.Compile("(\\d{2})\\/(\\d{2})\\/?(\\d{4})?")
 		if err != nil {
@@ -65,7 +65,7 @@ func (gb *GoBirthday) AddContacts(filename string) error {
 				"firstname": contact.Firstname,
 				"lastname":  contact.Lastname,
 				"birthdate": contact.Birthdate,
-			}).Errorln("the birthdate is incorrect")
+			}).Errorln("The birthdate is incorrect")
 
 			continue
 		}
@@ -77,34 +77,32 @@ func (gb *GoBirthday) AddContacts(filename string) error {
 		day, err := strconv.Atoi(subs[1])
 		if err != nil {
 			logrus.Errorf("Error while converting the day : %s", err)
+			continue
 		}
-		bd.Day = day
 
 		// Convert the month
 		month, err := strconv.Atoi(subs[2])
 		if err != nil {
 			logrus.Errorf("Error while converting the month : %s", err)
+			continue
 		}
-		bd.Month = month
 
 		// Convert the year if it exists
+		var year int
 		if subs[3] != "" {
-			year, err := strconv.Atoi(subs[3])
+			year, err = strconv.Atoi(subs[3])
 			if err != nil {
 				logrus.Errorf("Error while converting the year : %s", err)
 			}
-
-			bd.Year = year
 		} else {
-			bd.Year = 0
+			year = 0
 		}
+
+		// Create the birthdate
+		bd := models.NewBirthdate(day, month, year)
 
 		// Create the contact
-		c := &models.Contact{
-			Firstname: contact.Firstname,
-			Lastname:  contact.Lastname,
-			Birthdate: bd,
-		}
+		c := models.NewContact(contact.Firstname, contact.Lastname, contact.Nickname, contact.Description, bd)
 
 		// Add the contact
 		gb.contacts = append(gb.contacts, c)
@@ -144,6 +142,10 @@ func (gb *GoBirthday) AddProviders(filename string) error {
 			default:
 				return fmt.Errorf("Wrong vendor of SMS provider : %s", provider.Type)
 			}
+		case "email":
+			emailProvider := email.NewProvider(provider.Settings)
+				gb.providers = append(gb.providers, emailProvider)
+				break
 		default:
 			return fmt.Errorf("Wrong type of provider : %s", provider.Type)
 		}

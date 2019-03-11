@@ -8,6 +8,10 @@
 
 You do not have a Facebook account ? You do not have a smartphone ? Then you do not wish any birthday except your parents, do you ? This software is for you !
 
+## What about the leap years ?
+
+Hum.
+
 ## Features
 
 ### Contacts

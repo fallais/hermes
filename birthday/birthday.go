@@ -3,7 +3,6 @@ package birthday
 import (
 	"os"
 	"os/signal"
-	"time"
 
 	"gobirthday/models"
 	"gobirthday/providers"
@@ -51,12 +50,9 @@ func (gb *GoBirthday) Notify() {
 	// Process all the contacts
 	for _, contact := range gb.contacts {
 		// Check the birthdate
-		if contact.Birthdate.Day == time.Now().Day() && contact.Birthdate.Month == int(time.Now().Month()) {
-			// Calculate the age
-			age := calculateAge(contact.Birthdate)
-
+		if contact.IsBirthdayToday() {
 			logrus.WithFields(logrus.Fields{
-				"age":       age,
+				"age":       contact.GetAge(),
 				"firstname": contact.Firstname,
 				"lastname":  contact.Lastname,
 			}).Infoln("Birthday to wish !")
@@ -67,7 +63,7 @@ func (gb *GoBirthday) Notify() {
 					"provider_type":   provider.Type(),
 					"provider_vendor": provider.Vendor(),
 				}).Infoln("Sending the notification")
-				err := provider.SendNotification(contact.Firstname, contact.Lastname, age)
+				err := provider.SendNotification(contact.Firstname, contact.Lastname, contact.GetAge())
 				if err != nil {
 					logrus.WithFields(logrus.Fields{
 						"provider_type":   provider.Type(),
