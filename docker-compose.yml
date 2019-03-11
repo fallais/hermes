@@ -21,3 +21,7 @@ services:
     image: namshi/smtp
     container_name: smtp
     restart: always
+    networks:
+      main:
+        aliases:
+          - smtp

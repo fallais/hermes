@@ -15,4 +15,4 @@ RUN mkdir /app
 WORKDIR /app
 COPY --from=builder /go/src/gobirthday /app/
 
-CMD /app/gobirthday --contacts_file /app/contacts.json --providers_file /app/providers.json --cron_exp=$CRON_EXP --handle_leap_years=$HANDLE_LEAP_YEARS --run_on_startup=$RUN_ON_STARTUP
+CMD /app/gobirthday --contacts_file /app/contacts.json --providers_file /app/providers.json --cron_exp="$CRON_EXP" --handle_leap_years=$HANDLE_LEAP_YEARS --run_on_startup=$RUN_ON_STARTUP
