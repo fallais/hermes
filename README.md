@@ -49,7 +49,10 @@ A **provider** is used to send notifications, it could be one of the following :
   - Orange *(not yet)*
   - SFR *(not yet)*
 - Email
-- Webhook *(not yet)*
+- Webhook
+  - Slack *(not yet)*
+  - Mattermost *(not yet)*
+  - IFTTT *(not yet)*
 - etc..
 
 The list of providers must be as follow :
@@ -68,7 +71,7 @@ The list of providers must be as follow :
     "type": "email",
     "vendor": "email",
     "settings": {
-      "host": "localhost",
+      "host": "smtp",
       "port": 25,
       "recipient": "xxx.xxx@hotmail.com",
       "subject": "Birthay !"

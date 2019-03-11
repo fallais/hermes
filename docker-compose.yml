@@ -8,7 +8,7 @@ services:
     environment:
       - HANDLE_LEAP_YEARS=true
       - RUN_ON_STARTUP=true
-      - CRON_EXP="50 15 * * *"
+      - CRON_EXP=50 15 * * *
     volumes:
       - contacts.json:/app/contacts.json
       - providers.json:/app/providers.json
