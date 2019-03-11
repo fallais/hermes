@@ -3,6 +3,7 @@ package birthday
 import (
 	"os"
 	"os/signal"
+	"time"
 
 	"gobirthday/models"
 	"gobirthday/providers"
@@ -67,7 +68,7 @@ func (gb *GoBirthday) Notify() {
 					"provider_type":   provider.Type(),
 					"provider_vendor": provider.Vendor(),
 				}).Infoln("Sending the notification")
-				err := provider.SendNotification(contact.Firstname, contact.Lastname, contact.GetAge())
+				err := provider.SendNotification(contact)
 				if err != nil {
 					logrus.WithFields(logrus.Fields{
 						"provider_type":   provider.Type(),
@@ -81,6 +82,15 @@ func (gb *GoBirthday) Notify() {
 					"provider_vendor": provider.Vendor(),
 				}).Infoln("Successfully sent the notification")
 			}
+		}
+
+		// Check leap years
+		if gb.handleLeapYears && contact.IsBornOnLeapYear() && time.Now().Day() == 1 && time.Now().Month() == time.March {
+			logrus.WithFields(logrus.Fields{
+				"age":       contact.GetAge(),
+				"firstname": contact.Firstname,
+				"lastname":  contact.Lastname,
+			}).Infoln("Birthday to wish on a leap year !")
 		}
 	}
 }

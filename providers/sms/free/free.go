@@ -9,6 +9,7 @@ import (
 	"time"
 
 	"gobirthday/providers"
+	"gobirthday/models"
 
 	"github.com/sirupsen/logrus"
 )
@@ -84,9 +85,14 @@ func NewProvider(settings map[string]interface{}) providers.Provider {
 //------------------------------------------------------------------------------
 
 // SendNotification sends a notification.
-func (s *free) SendNotification(firstname, lastname string, age int) error {
+func (s *free) SendNotification(contact *models.Contact) error {
 	// Craft the message body
-	body := "This is the birthday of " + firstname + " " + lastname + " ! " + strconv.Itoa(age) + " years old !"
+	var body string
+	if contact.GetAge() == 0 {
+		body = "This is the birthday of " + contact.Firstname + " " + contact.Lastname + " !"
+	} else {
+		body = "This is the birthday of " + contact.Firstname + " " + contact.Lastname + " ! " + strconv.Itoa(contact.GetAge()) + " years old !"
+	}
 
 	// Prepare the URL
 	var reqURL *url.URL

@@ -4,6 +4,7 @@ import (
 	"fmt"
 
 	"gobirthday/providers"
+	"gobirthday/models"
 
 	"github.com/sirupsen/logrus"
 	"gopkg.in/gomail.v2"
@@ -70,13 +71,13 @@ func NewProvider(settings map[string]interface{}) providers.Provider {
 //------------------------------------------------------------------------------
 
 // SendNotification sends a notification.
-func (p *email) SendNotification(firstname, lastname string, age int) error {
+func (p *email) SendNotification(contact *models.Contact) error {
 	// Create the message
 	m := gomail.NewMessage()
 	m.SetHeader("From", p.recipient)
 	m.SetHeader("To", p.recipient)
 	m.SetHeader("Subject", p.subject)
-	m.SetBody("text/html", fmt.Sprintf("This is the birthday of <b>%s</b> !", firstname))
+	m.SetBody("text/html", fmt.Sprintf("This is the birthday of <b>%s</b> !", contact.Firstname))
 
 	// Dial
 	d := gomail.Dialer{Host: p.host, Port: p.port}

@@ -57,3 +57,8 @@ func (c *Contact) IsBirthdayToday() bool {
 
 	return false
 }
+
+// IsBornOnLeapYear returns true if the contact is born on Frebruary the 29th.
+func (c *Contact) IsBornOnLeapYear() bool {
+	return c.Birthdate.Day == 29 && c.Birthdate.Month == int(time.February)
+}

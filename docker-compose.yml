@@ -1,0 +1,23 @@
+version: "3"
+
+services:
+  plex:
+    image: fallais/gobirthday
+    container_name: gobirthday
+    restart: always
+    environment:
+      - HANDLE_LEAP_YEARS=true
+      - RUN_ON_STARTUP=true
+      - CRON_EXP="50 15 * * *"
+    volumes:
+      - contacts.json:/app/contacts.json
+      - providers.json:/app/providers.json
+    networks:
+      main:
+        aliases:
+          - gobirthday
+  
+  smtp:
+    image: namshi/smtp
+    container_name: smtp
+    restart: always

@@ -56,3 +56,29 @@ func TestIsBirthdayToday(t *testing.T) {
 		t.Fail()
 	}
 }
+
+func TestIsBornOnLeapYear(t *testing.T) {
+	// Create the birthdate
+	bd := NewBirthdate(29, 02, 1950)
+
+	// Create the contact
+	contact := NewContact("John", "Doe", "Jojo", "Best friend", bd)
+
+	// Check the leap year
+	if !contact.IsBornOnLeapYear() {
+		t.Errorf("Should be true")
+		t.Fail()
+	}
+
+	// Create the birthdate
+	bd = NewBirthdate(29, 01, 1950)
+
+	// Create the contact
+	contact = NewContact("John", "Doe", "Jojo", "Best friend", bd)
+
+	// Check the leap year
+	if contact.IsBornOnLeapYear() {
+		t.Errorf("Should be false")
+		t.Fail()
+	}
+}

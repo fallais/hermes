@@ -1,8 +1,12 @@
 package providers
 
+import (
+	"gobirthday/models"
+)
+
 // Provider interface
 type Provider interface {
-	SendNotification(string, string, int) error
+	SendNotification(*models.Contact) error
 	Type() string
 	Vendor() string
 }
