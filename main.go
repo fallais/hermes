@@ -14,7 +14,7 @@ var (
 	providersFile   = flag.String("providers_file", "providers.json", "Providers list")
 	handleLeapYears = flag.Bool("handle_leap_years", false, "Handle leap years ?")
 	cronExp         = flag.String("cron_exp", "50 15 * * *", "Cron ?")
-	runOnStartup = flag.Bool("run_on_startup", false, "Run on startup ?")
+	runOnStartup    = flag.Bool("run_on_startup", false, "Run on startup ?")
 )
 
 func init() {

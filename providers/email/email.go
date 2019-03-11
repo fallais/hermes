@@ -3,8 +3,8 @@ package email
 import (
 	"fmt"
 
-	"gobirthday/providers"
 	"gobirthday/models"
+	"gobirthday/providers"
 
 	"github.com/sirupsen/logrus"
 	"gopkg.in/gomail.v2"

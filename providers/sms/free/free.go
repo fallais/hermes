@@ -8,8 +8,8 @@ import (
 	"strconv"
 	"time"
 
-	"gobirthday/providers"
 	"gobirthday/models"
+	"gobirthday/providers"
 
 	"github.com/sirupsen/logrus"
 )

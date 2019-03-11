@@ -19,7 +19,7 @@ type Birthdate struct {
 // Factory
 //------------------------------------------------------------------------------
 
-// NewBirthdate returns a new Birthdate
+// NewBirthdate returns a new Birthdate.
 func NewBirthdate(day, month, year int) *Birthdate {
 	return &Birthdate{
 		Day:   day,

@@ -26,7 +26,7 @@ type GoBirthday struct {
 	cronExp         string
 	cron            *cron.Cron
 	handleLeapYears bool
-	runOnStartup bool
+	runOnStartup    bool
 }
 
 //------------------------------------------------------------------------------
@@ -40,7 +40,7 @@ func NewGoBirthday(cronExp string, handleLeapYears, runOnStartup bool) (*GoBirth
 		cron:            cron.New(),
 		cronExp:         cronExp,
 		handleLeapYears: handleLeapYears,
-		runOnStartup: runOnStartup,
+		runOnStartup:    runOnStartup,
 	}
 
 	return gb, nil
