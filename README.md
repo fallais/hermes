@@ -8,7 +8,7 @@
 
 You do not have a Facebook account ? You do not have a smartphone ? Then you do not wish any birthday except your parents, do you ? This software is for you !
 
-## What about the leap years ?
+### What about the leap years ?
 
 Hum, you have a friend who was born the 29 of February, that is sad, because every four years, no birthday for your friend. Do not worry, if you want to, you will be noticed the 1st of March.
 
@@ -48,7 +48,7 @@ A **provider** is used to send notifications, it could be one of the following :
   - Free
   - Orange *(not yet)*
   - SFR *(not yet)*
-- Email *(not yet)*
+- Email
 - Webhook *(not yet)*
 - etc..
 
