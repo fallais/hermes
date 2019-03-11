@@ -32,7 +32,7 @@ func NewBirthdate(day, month, year int) *Birthdate {
 // Functions
 //------------------------------------------------------------------------------
 
-// ToString returns the birthdate.
+// ToString returns a string representation of the birthdate.
 func (m *Birthdate) ToString() string {
 	if m.Year == 0 {
 		return fmt.Sprintf("%02d/%02d", m.Day, m.Month)

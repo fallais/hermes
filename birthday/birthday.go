@@ -12,9 +12,6 @@ import (
 	"github.com/sirupsen/logrus"
 )
 
-// BirthdateDefaultFormat is the birthdate format.
-const BirthdateDefaultFormat = "02/01/2006"
-
 //------------------------------------------------------------------------------
 // Structure
 //------------------------------------------------------------------------------
@@ -34,16 +31,13 @@ type GoBirthday struct {
 //------------------------------------------------------------------------------
 
 // NewGoBirthday returns new GoBirthday with the given CRON expression.
-func NewGoBirthday(cronExp string, handleLeapYears, runOnStartup bool) (*GoBirthday, error) {
-	// Create the object
-	gb := &GoBirthday{
+func NewGoBirthday(cronExp string, handleLeapYears, runOnStartup bool) *GoBirthday {
+	return &GoBirthday{
 		cron:            cron.New(),
 		cronExp:         cronExp,
 		handleLeapYears: handleLeapYears,
 		runOnStartup:    runOnStartup,
 	}
-
-	return gb, nil
 }
 
 //------------------------------------------------------------------------------

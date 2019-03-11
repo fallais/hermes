@@ -49,14 +49,12 @@ func init() {
 func main() {
 	// Parse the contacts file
 	logrus.Infoln("Creating the GoBirthday")
-	gb, err := birthday.NewGoBirthday(*cronExp, *handleLeapYears, *runOnStartup)
-	if err != nil {
-		logrus.Fatalf("Error while creating the GoBirthday : %s", err)
-	}
+	gb := birthday.NewGoBirthday(*cronExp, *handleLeapYears, *runOnStartup)
+	logrus.Infoln("Successfully created the GoBirthday")
 
 	// Add the contacts
 	logrus.Infoln("Adding the contacts")
-	err = gb.AddContacts(*contactsFile)
+	err := gb.AddContacts(*contactsFile)
 	if err != nil {
 		logrus.Fatalf("Error while adding the contacts : %s", err)
 	}
