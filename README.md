@@ -4,21 +4,19 @@
 
 **GoBirthday** is a tool written in **Go** that reminds you all birthdays that you need to wish !
 
-## Why ?
+## Why
 
-You do not have a Facebook account ? You do not have a smartphone ? Then you do not wish any birthday except your parents, do you ? This software is for you !
+You do not have a Facebook account ? You do not have a smartphone ? So you do not wish any more birthday, except for your parents, do you ? This software is for you !
 
-### What about the leap years ?
+### What about the leap years
 
-Hum, you have a friend who was born the 29 of February, that is sad, because every four years, no birthday for your friend. Do not worry, if you want to, you will be noticed the 1st of March.
-
-If you want to : `HANDLE_LEAP_YEARS=true`
+Hum, you have a friend who was born the 29 of February, that is sad, because every four years, no birthday for your friend. Do not worry, if you want to, you will be noticed the 1st of March : `HANDLE_LEAP_YEARS=true`.
 
 ## Features
 
 ### Contacts
 
-A **contact** is defined by a *firstname*, a *lastname* and a *birthdate (DD/MM/YYYY or DD/MM)*. Contacts list must be as follow :
+A **contact** is defined by a *firstname*, a *lastname*, a *nickname*, a *description* and a *birthdate (DD/MM/YYYY or DD/MM)*. Contacts list must be as follow :
 
 ```json
 [
@@ -30,12 +28,15 @@ A **contact** is defined by a *firstname*, a *lastname* and a *birthdate (DD/MM/
   {
     "firstname": "Henry",
     "lastname": "Doe",
-    "birthdate": "31/01/1951"
+    "birthdate": "31/01/1951",
+    "nickname": "Johnny",
+    "description": "Best friend"
   },
   {
     "firstname": "John",
     "lastname": "Doe",
-    "birthdate": "08/04/1951"
+    "birthdate": "08/04/1951",
+    "nickname": "Johnny"
   }
 ]
 ```

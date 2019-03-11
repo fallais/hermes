@@ -35,7 +35,7 @@ type Provider struct {
 // Functions
 //------------------------------------------------------------------------------
 
-// AddContacts add the contacts.
+// AddContacts adds the contacts.
 func (gb *GoBirthday) AddContacts(filename string) error {
 	var contacts []*Contact
 
