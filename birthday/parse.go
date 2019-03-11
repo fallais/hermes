@@ -8,19 +8,19 @@ import (
 	"strconv"
 
 	"gobirthday/models"
+	"gobirthday/providers/email"
 	"gobirthday/providers/sms/free"
 	"gobirthday/providers/sms/orange"
-	"gobirthday/providers/email"
 
 	"github.com/sirupsen/logrus"
 )
 
 // Contact is a contact.
 type Contact struct {
-	Firstname string `json:"firstname"`
-	Lastname  string `json:"lastname"`
-	Birthdate string `json:"birthdate"`
-	Nickname string `json:"nickname"`
+	Firstname   string `json:"firstname"`
+	Lastname    string `json:"lastname"`
+	Birthdate   string `json:"birthdate"`
+	Nickname    string `json:"nickname"`
 	Description string `json:"description"`
 }
 
@@ -144,8 +144,8 @@ func (gb *GoBirthday) AddProviders(filename string) error {
 			}
 		case "email":
 			emailProvider := email.NewProvider(provider.Settings)
-				gb.providers = append(gb.providers, emailProvider)
-				break
+			gb.providers = append(gb.providers, emailProvider)
+			break
 		default:
 			return fmt.Errorf("Wrong type of provider : %s", provider.Type)
 		}

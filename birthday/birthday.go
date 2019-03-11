@@ -20,10 +20,11 @@ const BirthdateDefaultFormat = "02/01/2006"
 
 // GoBirthday is a birthday reminder that allows you to not forget your loved ones.
 type GoBirthday struct {
-	contacts  []*models.Contact
-	providers []providers.Provider
-	cronExp   string
-	cron      *cron.Cron
+	contacts        []*models.Contact
+	providers       []providers.Provider
+	cronExp         string
+	cron            *cron.Cron
+	handleLeapYears bool
 }
 
 //------------------------------------------------------------------------------
@@ -31,11 +32,12 @@ type GoBirthday struct {
 //------------------------------------------------------------------------------
 
 // NewGoBirthday returns new GoBirthday with the given CRON expression.
-func NewGoBirthday(cronExp string) (*GoBirthday, error) {
+func NewGoBirthday(cronExp string, handleLeapYears bool) (*GoBirthday, error) {
 	// Create the object
 	gb := &GoBirthday{
-		cron:    cron.New(),
-		cronExp: cronExp,
+		cron:            cron.New(),
+		cronExp:         cronExp,
+		handleLeapYears: handleLeapYears,
 	}
 
 	return gb, nil

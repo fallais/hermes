@@ -9,10 +9,11 @@ import (
 )
 
 var (
-	logging       = flag.String("logging", "info", "Logging level")
-	contactsFile  = flag.String("contacts_file", "contacts.json", "Contacts")
-	providersFile = flag.String("providers_file", "providers.json", "Providers")
-	cronExp       = flag.String("cron_exp", "50 15 * * *", "Cron ?")
+	logging         = flag.String("logging", "info", "Logging level")
+	contactsFile    = flag.String("contacts_file", "contacts.json", "Contacts list")
+	providersFile   = flag.String("providers_file", "providers.json", "Providers list")
+	handleLeapYears = flag.Bool("handle_leap_years", true, "Handle leap years ?")
+	cronExp         = flag.String("cron_exp", "50 15 * * *", "Cron ?")
 )
 
 func init() {
@@ -47,7 +48,7 @@ func init() {
 func main() {
 	// Parse the contacts file
 	logrus.Infoln("Creating the GoBirthday")
-	gb, err := birthday.NewGoBirthday(*cronExp)
+	gb, err := birthday.NewGoBirthday(*cronExp, *handleLeapYears)
 	if err != nil {
 		logrus.Fatalf("Error while creating the GoBirthday : %s", err)
 	}

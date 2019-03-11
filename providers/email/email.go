@@ -20,10 +20,10 @@ const Type = "Email"
 const Vendor = "Email"
 
 type email struct {
-	host    string
-	port   int
+	host      string
+	port      int
 	recipient string
-	subject string
+	subject   string
 }
 
 //------------------------------------------------------------------------------
@@ -58,10 +58,10 @@ func NewProvider(settings map[string]interface{}) providers.Provider {
 	}
 
 	return &email{
-		host: host,
-		port:   port,
+		host:      host,
+		port:      port,
 		recipient: recipient,
-		subject: subject,
+		subject:   subject,
 	}
 }
 

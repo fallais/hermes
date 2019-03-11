@@ -10,7 +10,9 @@ You do not have a Facebook account ? You do not have a smartphone ? Then you do 
 
 ## What about the leap years ?
 
-Hum.
+Hum, you have a friend who was born the 29 of February, that is sad, because every four years, no birthday for your friend. Do not worry, if you want to, you will be noticed the 1st of March.
+
+If you want to : `HANDLE_LEAP_YEARS=true`
 
 ## Features
 
@@ -60,6 +62,16 @@ The list of providers must be as follow :
     "settings": {
       "user": "xxxxxxxx",
       "pass": "xxxxxxx"
+    }
+  },
+  {
+    "type": "email",
+    "vendor": "email",
+    "settings": {
+      "host": "localhost",
+      "port": 25,
+      "recipient": "xxx.xxx@hotmail.com",
+      "subject": "Birthay !"
     }
   }
 ]

@@ -12,10 +12,10 @@ import (
 
 // Contact is a contact.
 type Contact struct {
-	ID string
+	ID          string
 	Firstname   string
 	Lastname    string
-	Nickname string
+	Nickname    string
 	Description string
 	Birthdate   *Birthdate
 }
@@ -27,12 +27,12 @@ type Contact struct {
 // NewContact returns a valid Contact instance
 func NewContact(firstname, lastname, nickname, description string, bd *Birthdate) *Contact {
 	return &Contact{
-		ID:                uniuri.New(),
-		Firstname:              firstname,
-		Lastname:       lastname,
-		Nickname: nickname,
+		ID:          uniuri.New(),
+		Firstname:   firstname,
+		Lastname:    lastname,
+		Nickname:    nickname,
 		Description: description,
-		Birthdate:              bd,
+		Birthdate:   bd,
 	}
 }
 

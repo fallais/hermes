@@ -22,9 +22,9 @@ type Birthdate struct {
 // NewBirthdate returns a new Birthdate
 func NewBirthdate(day, month, year int) *Birthdate {
 	return &Birthdate{
-		Day:              day,
-		Month:       month,
-		Year:              year,
+		Day:   day,
+		Month: month,
+		Year:  year,
 	}
 }
 
