@@ -13,7 +13,7 @@ var (
 	contactsFile    = flag.String("contacts_file", "contacts.json", "Contacts list")
 	providersFile   = flag.String("providers_file", "providers.json", "Providers list")
 	handleLeapYears = flag.Bool("handle_leap_years", false, "Handle leap years ?")
-	cronExp         = flag.String("cron_exp", "50 15 * * *", "Cron ?")
+	cronExp         = flag.String("cron_exp", "* 50 15 * * *", "Cron ?")
 	runOnStartup    = flag.Bool("run_on_startup", false, "Run on startup ?")
 )
 
@@ -48,7 +48,11 @@ func init() {
 
 func main() {
 	// Parse the contacts file
-	logrus.Infoln("Creating the GoBirthday")
+	logrus.WithFields(logrus.Fields{
+		"cron_exp": *cronExp,
+		"handle_leap_years": *handleLeapYears,
+		"run_on_startup": *runOnStartup,
+	}).Infoln("Creating the GoBirthday")
 	gb := birthday.NewGoBirthday(*cronExp, *handleLeapYears, *runOnStartup)
 	logrus.Infoln("Successfully created the GoBirthday")
 

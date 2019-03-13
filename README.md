@@ -85,17 +85,19 @@ The list of providers must be as follow :
 
 A **CRON expression** can be provided if you want to control the time when you receive the notification. If you need help with CRON expression : [CronTabGuru](https://crontab.guru/)
 
+> **Attention** : a **second** must must added before the CRON expression because of the library used (`github.com/robfig/cron`). For example : `* 50 15 * * *`
+
 ## Usage
 
 ### As a software
 
-It can be used as follow : `gobirthday --cron_exp="30 11 * * *" --contacts_file /app/contacts.json --providers_file /app/providers.json`
+It can be used as follow : `gobirthday --cron_exp="* 30 11 * * *" --contacts_file /app/contacts.json --providers_file /app/providers.json`
 
 ### As a Docker container
 
 It can also be deployed in a Docker container, it is only 20MB.
 
-`docker run -d --name gobirthday -e CRON_EXP="30 11 * * *" -v contacts.json:/app/contacts.json -v providers.json:/app/providers.json fallais/gobirthday`
+`docker run -d --name gobirthday -e CRON_EXP="* 30 11 * * *" -v contacts.json:/app/contacts.json -v providers.json:/app/providers.json fallais/gobirthday`
 
 ### With docker-compose
 
@@ -112,7 +114,7 @@ services:
     environment:
       - HANDLE_LEAP_YEARS=true
       - RUN_ON_STARTUP=true
-      - CRON_EXP=50 15 * * *
+      - CRON_EXP=* 50 15 * * *
     volumes:
       - contacts.json:/app/contacts.json
       - providers.json:/app/providers.json
