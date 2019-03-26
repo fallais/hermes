@@ -1,14 +1,11 @@
 package birthday
 
 import (
-	"os"
-	"os/signal"
 	"time"
 
 	"gobirthday/models"
 	"gobirthday/providers"
 
-	"github.com/robfig/cron"
 	"github.com/sirupsen/logrus"
 )
 
@@ -20,23 +17,17 @@ import (
 type GoBirthday struct {
 	contacts        []*models.Contact
 	providers       []providers.Provider
-	cronExp         string
-	cron            *cron.Cron
 	handleLeapYears bool
-	runOnStartup    bool
 }
 
 //------------------------------------------------------------------------------
 // Factory
 //------------------------------------------------------------------------------
 
-// NewGoBirthday returns new GoBirthday with the given CRON expression.
-func NewGoBirthday(cronExp string, handleLeapYears, runOnStartup bool) *GoBirthday {
+// NewGoBirthday returns new GoBirthday.
+func NewGoBirthday(handleLeapYears bool) *GoBirthday {
 	return &GoBirthday{
-		cron:            cron.New(),
-		cronExp:         cronExp,
 		handleLeapYears: handleLeapYears,
-		runOnStartup:    runOnStartup,
 	}
 }
 
@@ -97,43 +88,4 @@ func (gb *GoBirthday) NbContacts() int {
 // NbProviders return the number of providers.
 func (gb *GoBirthday) NbProviders() int {
 	return len(gb.providers)
-}
-
-// Start starts the program and wait for OS signals.
-func (gb *GoBirthday) Start() {
-	signalChan := make(chan os.Signal, 1)
-	cleanupDone := make(chan bool)
-
-	// Run on startup
-	if gb.runOnStartup {
-		gb.Notify()
-	}
-
-	// Add the function to the CRON
-	logrus.WithFields(logrus.Fields{
-		"cron_exp": gb.cronExp,
-	}).Infoln("Adding function to the CRON")
-	gb.cron.AddFunc(gb.cronExp, gb.Notify)
-
-	// Start the CRON
-	logrus.Infoln("Starting the CRON")
-	gb.cron.Start()
-
-	// Handle KILL or CTRL+C
-	signal.Notify(signalChan, os.Kill, os.Interrupt)
-	go func() {
-		for range signalChan {
-			logrus.Infoln("Received an interrupt, stopping services...")
-
-			gb.cron.Stop()
-
-			logrus.Infoln("Services stopped")
-
-			cleanupDone <- true
-		}
-	}()
-
-	logrus.Infoln("Waiting for birthdays to wish")
-
-	<-cleanupDone
 }

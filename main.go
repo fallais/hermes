@@ -1,11 +1,13 @@
 package main
 
 import (
+	"os"
+	"os/signal"
 	"flag"
 	"gobirthday/birthday"
-	"time"
 
 	"github.com/sirupsen/logrus"
+	"github.com/robfig/cron"
 )
 
 var (
@@ -13,16 +15,13 @@ var (
 	contactsFile    = flag.String("contacts_file", "contacts.json", "Contacts list")
 	providersFile   = flag.String("providers_file", "providers.json", "Providers list")
 	handleLeapYears = flag.Bool("handle_leap_years", false, "Handle leap years ?")
-	cronExp         = flag.String("cron_exp", "* 50 15 * * *", "Cron ?")
+	cronExp         = flag.String("cron_exp", "0 30 14 * * *", "Cron ?")
 	runOnStartup    = flag.Bool("run_on_startup", false, "Run on startup ?")
 )
 
 func init() {
 	// Parse the flags
 	flag.Parse()
-
-	// Set localtime to UTC
-	time.Local = time.UTC
 
 	// Set the logging level
 	switch *logging {
@@ -53,7 +52,7 @@ func main() {
 		"handle_leap_years": *handleLeapYears,
 		"run_on_startup": *runOnStartup,
 	}).Infoln("Creating the GoBirthday")
-	gb := birthday.NewGoBirthday(*cronExp, *handleLeapYears, *runOnStartup)
+	gb := birthday.NewGoBirthday(*handleLeapYears)
 	logrus.Infoln("Successfully created the GoBirthday")
 
 	// Add the contacts
@@ -76,6 +75,33 @@ func main() {
 		"nb_providers": gb.NbProviders(),
 	}).Infoln("Successfully added the providers")
 
-	// Start
-	gb.Start()
+	// Create the channels
+	signalChan := make(chan os.Signal, 1)
+	cleanupDone := make(chan bool)
+
+	// Run on startup
+	if *runOnStartup {
+		gb.Notify()
+	}
+
+	c := cron.New()
+
+	// Add the function to the CRON
+	logrus.WithFields(logrus.Fields{
+		"cron_exp": *cronExp,
+	}).Infoln("Adding function to the CRON")
+	c.AddFunc(*cronExp, gb.Notify)
+
+	// Handle KILL or CTRL+C
+	signal.Notify(signalChan, os.Kill, os.Interrupt)
+	go func() {
+		for _ = range signalChan {
+			logrus.Infoln("Received an interrupt, stopping...")
+			cleanupDone <- true
+		}
+	}()
+
+	logrus.Infoln("Waiting for birthdays to wish")
+
+	<-cleanupDone
 }
