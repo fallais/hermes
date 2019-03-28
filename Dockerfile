@@ -7,7 +7,7 @@ RUN go get -d -v && go build -o gobirthday
 FROM frolvlad/alpine-glibc:latest
 LABEL maintainer="francois.allais@hotmail.com"
 
-ENV CRON_EXP="50 15 * * *"
+ENV CRON_EXP="0 50 15 * * *"
 ENV HANDLE_LEAP_YEARS=true
 ENV RUN_ON_STARTUP=true
 
