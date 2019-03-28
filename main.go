@@ -92,11 +92,19 @@ func main() {
 	}).Infoln("Adding function to the CRON")
 	c.AddFunc(*cronExp, gb.Notify)
 
-	// Handle KILL or CTRL+C
+	// Start the CRON
+	logrus.Infoln("Starting the CRON")
+	c.Start()
+
+	// Handle the kill signals
 	signal.Notify(signalChan, os.Kill, os.Interrupt)
 	go func() {
-		for _ = range signalChan {
+		for range signalChan {
 			logrus.Infoln("Received an interrupt, stopping...")
+
+			// Stop the CRON
+			c.Stop()
+
 			cleanupDone <- true
 		}
 	}()
