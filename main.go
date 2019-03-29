@@ -1,13 +1,13 @@
 package main
 
 import (
-	"os"
-	"os/signal"
 	"flag"
 	"gobirthday/birthday"
+	"os"
+	"os/signal"
 
-	"github.com/sirupsen/logrus"
 	"github.com/robfig/cron"
+	"github.com/sirupsen/logrus"
 )
 
 var (
@@ -48,9 +48,9 @@ func init() {
 func main() {
 	// Parse the contacts file
 	logrus.WithFields(logrus.Fields{
-		"cron_exp": *cronExp,
+		"cron_exp":          *cronExp,
 		"handle_leap_years": *handleLeapYears,
-		"run_on_startup": *runOnStartup,
+		"run_on_startup":    *runOnStartup,
 	}).Infoln("Creating the GoBirthday")
 	gb := birthday.NewGoBirthday(*handleLeapYears)
 	logrus.Infoln("Successfully created the GoBirthday")
@@ -103,7 +103,7 @@ func main() {
 			logrus.Infoln("Received an interrupt, stopping...")
 
 			// Stop the CRON
-			c.Stop()
+			//c.Stop()
 
 			cleanupDone <- true
 		}

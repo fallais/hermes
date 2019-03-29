@@ -37,7 +37,8 @@ func NewGoBirthday(handleLeapYears bool) *GoBirthday {
 
 // Notify notifies all the birthdays that need to be wished.
 func (gb *GoBirthday) Notify() {
-	// Process all the contacts
+	// Check all the contacts
+	logrus.Debugln("Check all the contacts")
 	for _, contact := range gb.contacts {
 		// Check the birthdate
 		if contact.IsBirthdayToday() {
@@ -78,6 +79,7 @@ func (gb *GoBirthday) Notify() {
 			}).Infoln("Birthday to wish on a leap year !")
 		}
 	}
+	logrus.Debugln("All the contacts have been checked")
 }
 
 // NbContacts return the number of contacts.
