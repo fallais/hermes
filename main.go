@@ -103,7 +103,7 @@ func main() {
 			logrus.Infoln("Received an interrupt, stopping...")
 
 			// Stop the CRON
-			//c.Stop()
+			c.Stop()
 
 			cleanupDone <- true
 		}
