@@ -107,7 +107,7 @@ If you use the SMTP provider, you may want to use `docker-compose` :
 version: "3"
 
 services:
-  plex:
+  gobirthday:
     image: fallais/gobirthday
     container_name: gobirthday
     restart: always
