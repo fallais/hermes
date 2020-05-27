@@ -52,7 +52,7 @@ func (gb *GoBirthday) Notify() {
 
 			// Send all the notifications
 			for _, notifier := range gb.notifiers {
-				message := "Coucou"
+				message := "This is the birthday of " + contact.Firstname + " !"
 
 				logrus.WithFields(logrus.Fields{
 					"notifier": notifier.Name(),
