@@ -25,8 +25,10 @@ type GoBirthday struct {
 //------------------------------------------------------------------------------
 
 // NewGoBirthday returns new GoBirthday.
-func NewGoBirthday(handleLeapYears bool) *GoBirthday {
+func NewGoBirthday(handleLeapYears bool, contacts []*models.Contact, providers []providers.Provider) *GoBirthday {
 	return &GoBirthday{
+		contacts:        contacts,
+		providers:       providers,
 		handleLeapYears: handleLeapYears,
 	}
 }
@@ -38,7 +40,7 @@ func NewGoBirthday(handleLeapYears bool) *GoBirthday {
 // Notify notifies all the birthdays that need to be wished.
 func (gb *GoBirthday) Notify() {
 	// Check all the contacts
-	logrus.Debugln("Check all the contacts")
+	logrus.Infoln("Check all the contacts")
 	for _, contact := range gb.contacts {
 		// Check the birthdate
 		if contact.IsBirthdayToday() {

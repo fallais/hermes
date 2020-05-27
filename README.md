@@ -10,36 +10,40 @@ You do not have a Facebook account ? You do not have a smartphone ? So you do no
 
 ### What about the leap years
 
-Hum, you have a friend who was born the 29 of February, that is sad, because every four years, no birthday for your friend. Do not worry, if you want to, you will be noticed the 1st of March : `HANDLE_LEAP_YEARS=true`.
+Hum, you have a friend who was born the 29 of February, that is sad, because every four years, no birthday for your friend. Do not worry, if you want to, you will be noticed the 1st of March !
 
-## Features
+## Configuration file
+
+The configuration file must be as follow.
+
+```yaml
+general:
+  cron_exp: "0 30 14 * * *"
+  run_on_startup: true
+  handle_leap_years: true
+
+contacts:
+  - firstname: "Daniel"
+    lastname: "Doe"
+    birthdate: "27/05"
+  - firstname: "Henry"
+    lastname: "Doe"
+    birthdate: "31/01/1951"
+  - firstname: "John"
+    lastname: "Doe"
+    birthdate: "08/04/1951"
+
+providers:
+  - type: "sms"
+    vendor: "free"
+    settings:
+      user: "1234568797"
+      pass: "xxxxxxx"
+```
 
 ### Contacts
 
-A **contact** is defined by a *firstname*, a *lastname*, a *nickname*, a *description* and a *birthdate (DD/MM/YYYY or DD/MM)*. Contacts list must be as follow :
-
-```json
-[
-  {
-    "firstname": "Daniel",
-    "lastname": "Doe",
-    "birthdate": "08/03"
-  },
-  {
-    "firstname": "Henry",
-    "lastname": "Doe",
-    "birthdate": "31/01/1951",
-    "nickname": "Johnny",
-    "description": "Best friend"
-  },
-  {
-    "firstname": "John",
-    "lastname": "Doe",
-    "birthdate": "08/04/1951",
-    "nickname": "Johnny"
-  }
-]
-```
+A **contact** is defined by a *firstname*, a *lastname*, a *nickname*, a *description* and a *birthdate (DD/MM/YYYY or DD/MM)*.
 
 ### Providers
 
@@ -56,31 +60,6 @@ A **provider** is used to send notifications, it could be one of the following :
   - IFTTT *(not yet)*
 - etc..
 
-The list of providers must be as follow :
-
-```json
-[
-  {
-    "type": "sms",
-    "vendor": "free",
-    "settings": {
-      "user": "xxxxxxxx",
-      "pass": "xxxxxxx"
-    }
-  },
-  {
-    "type": "email",
-    "vendor": "email",
-    "settings": {
-      "host": "smtp",
-      "port": 25,
-      "recipient": "xxx.xxx@hotmail.com",
-      "subject": "Birthay !"
-    }
-  }
-]
-```
-
 ### CRON
 
 A **CRON expression** can be provided if you want to control the time when you receive the notification. If you need help with CRON expression : [CronTabGuru](https://crontab.guru/)
@@ -91,13 +70,13 @@ A **CRON expression** can be provided if you want to control the time when you r
 
 ### As a software
 
-It can be used as follow : `gobirthday --cron_exp="0 30 11 * * *" --contacts_file /app/contacts.json --providers_file /app/providers.json`
+It can be used as follow : `gobirthday --config config.yaml`
 
 ### As a Docker container
 
 It can also be deployed in a Docker container, it is only 20MB.
 
-`docker run -d --name gobirthday -e CRON_EXP="0 30 11 * * *" -v contacts.json:/app/contacts.json -v providers.json:/app/providers.json fallais/gobirthday`
+`docker run -d --name gobirthday --config config.yaml`
 
 ### With docker-compose
 
@@ -111,13 +90,10 @@ services:
     image: fallais/gobirthday
     container_name: gobirthday
     restart: always
-    environment:
-      - HANDLE_LEAP_YEARS=true
-      - RUN_ON_STARTUP=true
-      - CRON_EXP=0 50 15 * * *
     volumes:
       - contacts.json:/app/contacts.json
       - providers.json:/app/providers.json
+    command: --config config.yaml
     networks:
       main:
         aliases:

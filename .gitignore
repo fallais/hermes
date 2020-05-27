@@ -1,4 +1,2 @@
-providers.json
-contacts.json
-gobirthday.exe
-gobirthday
+configs/
+*.exe
