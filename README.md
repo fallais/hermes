@@ -14,7 +14,7 @@ Hum, you have a friend who was born the 29 of February, that is sad, because eve
 
 ## Configuration file
 
-The configuration file must be as follow.
+The configuration file must be as follow, it must be provided with `--config` flag.
 
 ```yaml
 general:
@@ -76,7 +76,7 @@ It can be used as follow : `gobirthday --config config.yaml`
 
 It can also be deployed in a Docker container, it is only 20MB.
 
-`docker run -d --name gobirthday --config config.yaml`
+`docker run -d --name gobirthday --volume config.yaml:/config.yaml`
 
 ### With docker-compose
 
@@ -91,9 +91,7 @@ services:
     container_name: gobirthday
     restart: always
     volumes:
-      - contacts.json:/app/contacts.json
-      - providers.json:/app/providers.json
-    command: --config config.yaml
+      - config.yaml:/config.yaml
     networks:
       main:
         aliases:
