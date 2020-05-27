@@ -3,9 +3,9 @@ package birthday
 import (
 	"time"
 
-	"gobirthday/models"
-	"gobirthday/providers"
+	"gobirthday/internal/models"
 
+	"github.com/fallais/gonotify/pkg/notifiers"
 	"github.com/sirupsen/logrus"
 )
 
@@ -13,10 +13,10 @@ import (
 // Structure
 //------------------------------------------------------------------------------
 
-// GoBirthday is a birthday reminder that allows you to not forget your loved ones.
+// GoBirthday is a birthday reminder that helps you to not forget your loved ones.
 type GoBirthday struct {
 	contacts        []*models.Contact
-	providers       []providers.Provider
+	notifiers       []notifiers.Notifier
 	handleLeapYears bool
 }
 
@@ -25,10 +25,10 @@ type GoBirthday struct {
 //------------------------------------------------------------------------------
 
 // NewGoBirthday returns new GoBirthday.
-func NewGoBirthday(handleLeapYears bool, contacts []*models.Contact, providers []providers.Provider) *GoBirthday {
+func NewGoBirthday(handleLeapYears bool, contacts []*models.Contact, notifiers []notifiers.Notifier) *GoBirthday {
 	return &GoBirthday{
 		contacts:        contacts,
-		providers:       providers,
+		notifiers:       notifiers,
 		handleLeapYears: handleLeapYears,
 	}
 }
@@ -51,23 +51,22 @@ func (gb *GoBirthday) Notify() {
 			}).Infoln("Birthday to wish !")
 
 			// Send all the notifications
-			for _, provider := range gb.providers {
+			for _, notifier := range gb.notifiers {
+				message := "Coucou"
+
 				logrus.WithFields(logrus.Fields{
-					"provider_type":   provider.Type(),
-					"provider_vendor": provider.Vendor(),
+					"notifier": notifier.Name(),
 				}).Infoln("Sending the notification")
-				err := provider.SendNotification(contact)
+				err := notifier.Notify(message)
 				if err != nil {
 					logrus.WithFields(logrus.Fields{
-						"provider_type":   provider.Type(),
-						"provider_vendor": provider.Vendor(),
+						"notifier": notifier.Name(),
 					}).Errorln("Error while sending the notification :", err)
 					continue
 				}
 
 				logrus.WithFields(logrus.Fields{
-					"provider_type":   provider.Type(),
-					"provider_vendor": provider.Vendor(),
+					"notifier": notifier.Name(),
 				}).Infoln("Successfully sent the notification")
 			}
 		}
@@ -89,7 +88,7 @@ func (gb *GoBirthday) NbContacts() int {
 	return len(gb.contacts)
 }
 
-// NbProviders return the number of providers.
-func (gb *GoBirthday) NbProviders() int {
-	return len(gb.providers)
+// NbNotifiers return the number of notifiers.
+func (gb *GoBirthday) NbNotifiers() int {
+	return len(gb.notifiers)
 }

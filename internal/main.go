@@ -6,7 +6,7 @@ import (
 	"os"
 	"os/signal"
 
-	"gobirthday/birthday"
+	"gobirthday/internal/birthday"
 
 	"github.com/robfig/cron"
 	"github.com/sirupsen/logrus"

@@ -3,12 +3,12 @@ package internal
 import (
 	"fmt"
 
-	"gobirthday/models"
-	"gobirthday/providers"
-	"gobirthday/providers/email"
-	"gobirthday/providers/sms/free"
-	"gobirthday/providers/sms/orange"
+	"gobirthday/internal/models"
 
+	"github.com/fallais/gonotify/pkg/notifiers"
+	"github.com/fallais/gonotify/pkg/notifiers/email"
+	"github.com/fallais/gonotify/pkg/notifiers/sms/free"
+	"github.com/fallais/gonotify/pkg/notifiers/sms/orange"
 	"github.com/spf13/viper"
 )
 
@@ -52,8 +52,8 @@ func setupContacts() ([]*models.Contact, error) {
 	return contacts, nil
 }
 
-func setupProviders() ([]providers.Provider, error) {
-	var providers []providers.Provider
+func setupProviders() ([]notifiers.Notifier, error) {
+	var providers []notifiers.Notifier
 	var configProviders []*Provider
 
 	err := viper.UnmarshalKey("providers", &configProviders)
@@ -67,17 +67,17 @@ func setupProviders() ([]providers.Provider, error) {
 		case "sms":
 			switch configProvider.Vendor {
 			case "free":
-				freeProvider := free.NewProvider(configProvider.Settings)
+				freeProvider := free.NewNotifier(configProvider.Settings)
 				providers = append(providers, freeProvider)
 				break
 			case "orange":
-				orangeProvider := orange.NewProvider(configProvider.Settings)
+				orangeProvider := orange.NewNotifier(configProvider.Settings)
 				providers = append(providers, orangeProvider)
 			default:
 				return nil, fmt.Errorf("Wrong vendor of SMS provider : %s", configProvider.Vendor)
 			}
 		case "email":
-			emailProvider := email.NewProvider(configProvider.Settings)
+			emailProvider := email.NewNotifier(configProvider.Settings)
 			providers = append(providers, emailProvider)
 			break
 		default:
