@@ -1,6 +1,7 @@
 package birthday
 
 import (
+	"fmt"
 	"time"
 
 	"gobirthday/internal/models"
@@ -53,6 +54,10 @@ func (gb *GoBirthday) Notify() {
 			// Send all the notifications
 			for _, notifier := range gb.notifiers {
 				message := "This is the birthday of " + contact.Firstname + " !"
+
+				if contact.GetAge() != 0 {
+					message += fmt.Sprintf(" %d years old !", contact.GetAge())
+				}
 
 				logrus.WithFields(logrus.Fields{
 					"notifier": notifier.Name(),
