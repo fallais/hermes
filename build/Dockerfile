@@ -6,5 +6,4 @@ RUN go build -o /go/bin/gobirthday
 
 FROM gcr.io/distroless/base-debian10
 COPY --from=builder /go/bin/gobirthday /
-ENTRYPOINT [ "/gobirthday" ]
-CMD [ "--config /config.yaml" ]
+CMD [ "/gobirthday", "--config", "/config.yaml" ]
