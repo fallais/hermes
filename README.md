@@ -1,6 +1,6 @@
 # GoBirthday
 
-![Birthday](https://github.com/fallais/gobirthday/blob/master/assets/birthday.png)
+![Birthday](https://github.com/fallais/gobirthday/blob/master/assets/gobirthday.png)
 
 **GoBirthday** is a tool written in **Go** that reminds you all birthdays that you need to wish !
 
