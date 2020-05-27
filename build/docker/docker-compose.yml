@@ -5,13 +5,8 @@ services:
     image: fallais/gobirthday
     container_name: gobirthday
     restart: always
-    environment:
-      - HANDLE_LEAP_YEARS=true
-      - RUN_ON_STARTUP=true
-      - CRON_EXP=50 15 * * *
     volumes:
-      - contacts.json:/app/contacts.json
-      - providers.json:/app/providers.json
+      - config.yaml:/config.yaml
     networks:
       main:
         aliases:
