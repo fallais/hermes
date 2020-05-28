@@ -21,6 +21,11 @@ general:
   cron_exp: "0 30 14 * * *"
   run_on_startup: true
   handle_leap_years: true
+  notification_template:
+    header: Hey !
+    base: This is the birthday of {{contact}} !
+    age: "{{age}} years old ! :)"
+    footer: See you !
 
 contacts:
   - firstname: "Daniel"
@@ -39,6 +44,18 @@ providers:
     settings:
       user: "1234568797"
       pass: "xxxxxxx"
+```
+
+### Notification template
+
+**notification_template** is used to configure the message you want to receive. Two variables must be provided : `[contact]` and `[age]`. The template is divided in for parts.
+
+```yaml
+notification_template:
+    header: Hey !
+    base: This is the birthday of {{contact}} !
+    age: "{{age}} years old ! :)"
+    footer: See you !
 ```
 
 ### Contacts

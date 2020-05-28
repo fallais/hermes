@@ -1,7 +1,8 @@
 package birthday
 
 import (
-	"fmt"
+	"strconv"
+	"strings"
 	"time"
 
 	"gobirthday/internal/models"
@@ -10,15 +11,28 @@ import (
 	"github.com/sirupsen/logrus"
 )
 
+// DefaultHeader is the default header message.
+const DefaultHeader = "Greets !"
+
+// DefaultBase is the default base message.
+const DefaultBase = "This is the birthay of [contact] !"
+
+// DefaultAge is the default age message.
+const DefaultAge = "[age] years old ! :)"
+
+// DefaultFooter is the default footer message.
+const DefaultFooter = "Bye !"
+
 //------------------------------------------------------------------------------
 // Structure
 //------------------------------------------------------------------------------
 
 // GoBirthday is a birthday reminder that helps you to not forget your loved ones.
 type GoBirthday struct {
-	contacts        []*models.Contact
-	notifiers       []notifiers.Notifier
-	handleLeapYears bool
+	contacts             []*models.Contact
+	notifiers            []notifiers.Notifier
+	notificationTemplate map[string]string
+	handleLeapYears      bool
 }
 
 //------------------------------------------------------------------------------
@@ -26,12 +40,29 @@ type GoBirthday struct {
 //------------------------------------------------------------------------------
 
 // NewGoBirthday returns new GoBirthday.
-func NewGoBirthday(handleLeapYears bool, contacts []*models.Contact, notifiers []notifiers.Notifier) *GoBirthday {
-	return &GoBirthday{
-		contacts:        contacts,
-		notifiers:       notifiers,
-		handleLeapYears: handleLeapYears,
+func NewGoBirthday(handleLeapYears bool, notificationTemplate map[string]string, contacts []*models.Contact, notifiers []notifiers.Notifier) *GoBirthday {
+	gb := &GoBirthday{
+		contacts:             contacts,
+		notifiers:            notifiers,
+		notificationTemplate: notificationTemplate,
+		handleLeapYears:      handleLeapYears,
 	}
+
+	// Check the template
+	if _, ok := notificationTemplate["header"]; !ok {
+		notificationTemplate["header"] = DefaultHeader
+	}
+	if _, ok := notificationTemplate["base"]; !ok {
+		notificationTemplate["base"] = DefaultBase
+	}
+	if _, ok := notificationTemplate["age"]; !ok {
+		notificationTemplate["age"] = DefaultAge
+	}
+	if _, ok := notificationTemplate["footer"]; !ok {
+		notificationTemplate["footer"] = DefaultFooter
+	}
+
+	return gb
 }
 
 //------------------------------------------------------------------------------
@@ -40,8 +71,12 @@ func NewGoBirthday(handleLeapYears bool, contacts []*models.Contact, notifiers [
 
 // Notify notifies all the birthdays that need to be wished.
 func (gb *GoBirthday) Notify() {
+	logrus.WithFields(logrus.Fields{
+		"nb_contacts": len(gb.contacts),
+	}).Infoln("Checking all the contacts")
+
 	// Check all the contacts
-	logrus.Infoln("Check all the contacts")
+	wished := 0
 	for _, contact := range gb.contacts {
 		// Check the birthdate
 		if contact.IsBirthdayToday() {
@@ -53,11 +88,28 @@ func (gb *GoBirthday) Notify() {
 
 			// Send all the notifications
 			for _, notifier := range gb.notifiers {
-				message := "This is the birthday of " + contact.Firstname + " !"
+				message := ""
 
+				// Add header
+				message += gb.notificationTemplate["header"]
+				message += " "
+
+				// Add base
+				message += gb.notificationTemplate["base"]
+				message += " "
+
+				// Add age if not null
 				if contact.GetAge() != 0 {
-					message += fmt.Sprintf(" %d years old !", contact.GetAge())
+					message += gb.notificationTemplate["age"]
+					message += " "
 				}
+
+				// Add footer
+				message += gb.notificationTemplate["footer"]
+
+				// Replace values
+				r := strings.NewReplacer("{{contact}}", contact.Firstname, "{{age}}", strconv.Itoa(contact.GetAge()))
+				message = r.Replace(message)
 
 				logrus.WithFields(logrus.Fields{
 					"notifier": notifier.Name(),
@@ -74,6 +126,8 @@ func (gb *GoBirthday) Notify() {
 					"notifier": notifier.Name(),
 				}).Infoln("Successfully sent the notification")
 			}
+
+			wished++
 		}
 
 		// Check leap years
@@ -85,7 +139,11 @@ func (gb *GoBirthday) Notify() {
 			}).Infoln("Birthday to wish on a leap year !")
 		}
 	}
-	logrus.Debugln("All the contacts have been checked")
+
+	logrus.WithFields(logrus.Fields{
+		"nb_contacts": len(gb.contacts),
+		"nb_whished":  wished,
+	}).Infoln("All the contacts have been checked")
 }
 
 // NbContacts return the number of contacts.
