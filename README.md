@@ -2,7 +2,7 @@
 
 ![Birthday](https://github.com/fallais/gobirthday/blob/master/assets/gobirthday.png)
 
-**GoBirthday** is a tool written in **Go** that reminds you all birthdays that you need to wish !
+**GoBirthday** is a tool written in **Go** that reminds you all birthdays that you need to wish ! It uses the [gonotify](https://github.com/fallais/gonotify) library for the notifications.
 
 ## Why
 
@@ -43,11 +43,19 @@ providers:
 
 ### Contacts
 
-A **contact** is defined by a *firstname*, a *lastname*, a *nickname*, a *description* and a *birthdate (DD/MM/YYYY or DD/MM)*.
+A **contact** is defined by :
 
-### Providers
+- a *firstname* : mandatory
+- a *lastname*
+- a *nickname*
+- a *description*
+- a *birthdate (DD/MM/YYYY or DD/MM)* : mandatory
 
-A **provider** is used to send notifications, it could be one of the following :
+If you do not provide the year in the birthdate, you will not know the age of your contact, but only that it is its birthday.
+
+### Notifiers
+
+A **notifier** is used to send notifications, it could be one of the following :
 
 - SMS
   - Free
@@ -62,7 +70,7 @@ A **provider** is used to send notifications, it could be one of the following :
 
 ### CRON
 
-A **CRON expression** can be provided if you want to control the time when you receive the notification. If you need help with CRON expression : [CronTabGuru](https://crontab.guru/)
+A **CRON expression** must be provided if you want to control the time when you receive the notification. If you need help with CRON expression : [CronTabGuru](https://crontab.guru/)
 
 > **Attention** : a **second** must must added before the CRON expression because of the library used (`github.com/robfig/cron`). For example : `0 50 15 * * *`
 
@@ -76,7 +84,7 @@ It can be used as follow : `gobirthday --config config.yaml`
 
 It can also be deployed in a Docker container, it is only 20MB.
 
-`docker run -d --name gobirthday --volume config.yaml:/config.yaml`
+`docker run -d --name gobirthday --volume config.yaml:/config.yaml fallais/gobirthday`
 
 ### With docker-compose
 
