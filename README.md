@@ -6,7 +6,9 @@
 
 ## Why
 
-You do not have a Facebook account ? You do not have a smartphone ? So you do not wish any more birthday, except for your parents, do you ? This software is for you !
+You do not have a Facebook account ? You do not have a smartphone ? So you do not wish any more birthday, except for your parents, do you ?
+
+Right, but you have Docker and you love Golang ? This software is for you !
 
 ### What about the leap years
 
