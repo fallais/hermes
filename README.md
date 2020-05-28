@@ -48,7 +48,7 @@ providers:
 
 ### Notification template
 
-**notification_template** is used to configure the message you want to receive. Two variables must be provided : `[contact]` and `[age]`. The template is divided in for parts.
+**notification_template** is used to configure the message you want to receive. Two variables must be provided : `{{contact}}` and `{{age}}`. The template is divided in for parts. They will be concatenated in one large message.
 
 ```yaml
 notification_template:
