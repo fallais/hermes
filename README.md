@@ -12,7 +12,7 @@ Right, but you have Docker and you love Golang ? This software is for you !
 
 ### What about the leap years
 
-Hum, you have a friend who was born the 29 of February, that is sad, because every four years, no birthday for your friend. Do not worry, if you want to, you will be noticed the 1st of March !
+Hum, you have a friend who was born the 29 of February, that is sad, because you wish it only once every four years. Do not worry, if you want to, you will be noticed the **28th of February** or **1st of March** (depends on how superstitious you are) !
 
 ## Configuration file
 
@@ -22,7 +22,9 @@ The configuration file must be as follow, it must be provided with `--config` fl
 general:
   cron_exp: "0 30 14 * * *"
   run_on_startup: true
-  handle_leap_years: true
+  leap_years:
+    is_enabled: true
+    mode: before
   notification_template:
     header: Hey !
     base: This is the birthday of {{contact}} !

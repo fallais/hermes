@@ -59,7 +59,7 @@ func Run(cmd *cobra.Command, args []string) {
 		"handle_leap_years": viper.GetBool("general.handle_leap_years"),
 		"run_on_startup":    viper.GetBool("general.run_on_startup"),
 	}).Infoln("Creating the GoBirthday")
-	gb := birthday.NewGoBirthday(viper.GetBool("general.handle_leap_years"), viper.GetStringMapString("general.notification_template"), contacts, providers)
+	gb := birthday.NewGoBirthday(viper.GetBool("general.leap_years.is_enabled"), viper.GetString("general.leap_years.mode"), viper.GetStringMapString("general.notification_template"), contacts, providers)
 	logrus.Infoln("Successfully created the GoBirthday")
 
 	// Create the channels

@@ -1,6 +1,7 @@
 package birthday
 
 import (
+	"fmt"
 	"strconv"
 	"strings"
 	"time"
@@ -32,7 +33,8 @@ type GoBirthday struct {
 	contacts             []*models.Contact
 	notifiers            []notifiers.Notifier
 	notificationTemplate map[string]string
-	handleLeapYears      bool
+	leapYearsEnabled     bool
+	leapYearsMode        string
 }
 
 //------------------------------------------------------------------------------
@@ -40,12 +42,13 @@ type GoBirthday struct {
 //------------------------------------------------------------------------------
 
 // NewGoBirthday returns new GoBirthday.
-func NewGoBirthday(handleLeapYears bool, notificationTemplate map[string]string, contacts []*models.Contact, notifiers []notifiers.Notifier) *GoBirthday {
+func NewGoBirthday(leapYearsEnabled bool, leapYearsMode string, notificationTemplate map[string]string, contacts []*models.Contact, notifiers []notifiers.Notifier) *GoBirthday {
 	gb := &GoBirthday{
 		contacts:             contacts,
 		notifiers:            notifiers,
 		notificationTemplate: notificationTemplate,
-		handleLeapYears:      handleLeapYears,
+		leapYearsEnabled:     leapYearsEnabled,
+		leapYearsMode:        leapYearsMode,
 	}
 
 	// Check the template
@@ -86,31 +89,32 @@ func (gb *GoBirthday) Notify() {
 				"lastname":  contact.Lastname,
 			}).Infoln("Birthday to wish !")
 
+			// Prepare the message
+			message := ""
+
+			// Add header
+			message += gb.notificationTemplate["header"]
+			message += " "
+
+			// Add base
+			message += gb.notificationTemplate["base"]
+			message += " "
+
+			// Add age if not null
+			if contact.GetAge() != 0 {
+				message += gb.notificationTemplate["age"]
+				message += " "
+			}
+
+			// Add footer
+			message += gb.notificationTemplate["footer"]
+
+			// Replace values
+			r := strings.NewReplacer("{{contact}}", contact.Firstname, "{{age}}", strconv.Itoa(contact.GetAge()))
+			message = r.Replace(message)
+
 			// Send all the notifications
 			for _, notifier := range gb.notifiers {
-				message := ""
-
-				// Add header
-				message += gb.notificationTemplate["header"]
-				message += " "
-
-				// Add base
-				message += gb.notificationTemplate["base"]
-				message += " "
-
-				// Add age if not null
-				if contact.GetAge() != 0 {
-					message += gb.notificationTemplate["age"]
-					message += " "
-				}
-
-				// Add footer
-				message += gb.notificationTemplate["footer"]
-
-				// Replace values
-				r := strings.NewReplacer("{{contact}}", contact.Firstname, "{{age}}", strconv.Itoa(contact.GetAge()))
-				message = r.Replace(message)
-
 				logrus.WithFields(logrus.Fields{
 					"notifier": notifier.Name(),
 				}).Infoln("Sending the notification")
@@ -131,12 +135,30 @@ func (gb *GoBirthday) Notify() {
 		}
 
 		// Check leap years
-		if gb.handleLeapYears && contact.IsBornOnLeapYear() && time.Now().Day() == 1 && time.Now().Month() == time.March {
+		if (gb.leapYearsEnabled && contact.IsBornOnLeapYear() && gb.leapYearsMode == "after" && time.Now().Day() == 1 && time.Now().Month() == time.March) || (gb.leapYearsEnabled && contact.IsBornOnLeapYear() && gb.leapYearsMode == "before" && time.Now().Day() == 28 && time.Now().Month() == time.February) {
 			logrus.WithFields(logrus.Fields{
 				"age":       contact.GetAge(),
 				"firstname": contact.Firstname,
 				"lastname":  contact.Lastname,
 			}).Infoln("Birthday to wish on a leap year !")
+
+			// Send all the notifications
+			for _, notifier := range gb.notifiers {
+				logrus.WithFields(logrus.Fields{
+					"notifier": notifier.Name(),
+				}).Infoln("Sending the notification")
+				err := notifier.Notify(fmt.Sprintf("Do not forget your friend %s born on a leap year !", contact.Firstname))
+				if err != nil {
+					logrus.WithFields(logrus.Fields{
+						"notifier": notifier.Name(),
+					}).Errorln("Error while sending the notification :", err)
+					continue
+				}
+
+				logrus.WithFields(logrus.Fields{
+					"notifier": notifier.Name(),
+				}).Infoln("Successfully sent the notification")
+			}
 		}
 	}
 
