@@ -12,7 +12,7 @@ import (
 
 var rootCmd = &cobra.Command{
 	Use:               "gobirthday",
-	Short:             "gobirthday will help you to with the birthday of your family and friends !",
+	Short:             "GoBirthday is a tool written in Go that reminds you all birthdays that you need to wish !",
 	Long:              ``,
 	PersistentPreRunE: persistentPreRunE,
 	Run:               internal.Run,
