@@ -109,7 +109,7 @@ func (gb *GoBirthday) Notify() {
 			message += gb.notificationTemplate["footer"]
 
 			// Replace values
-			r := strings.NewReplacer("{{contact}}", contact.Firstname, "{{age}}", strconv.Itoa(contact.GetAge()))
+			r := strings.NewReplacer("{{contact}}", contact.GetName(), "{{age}}", strconv.Itoa(contact.GetAge()))
 			message = r.Replace(message)
 
 			// Send all the notifications

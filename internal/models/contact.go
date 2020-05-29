@@ -19,10 +19,6 @@ type Contact struct {
 	Nickname    string
 	Description string
 	Birthdate   time.Time
-
-	/* 	day   int
-	   	month int
-	   	year  int */
 }
 
 //------------------------------------------------------------------------------
@@ -82,4 +78,31 @@ func (model *Contact) IsBirthdayToday() bool {
 // IsBornOnLeapYear returns true if the contact is born on Frebruary the 29th.
 func (model *Contact) IsBornOnLeapYear() bool {
 	return model.Birthdate.Day() == 29 && model.Birthdate.Month() == time.February
+}
+
+// GetName returns the formatted name of the contact.
+func (model *Contact) GetName() string {
+	var name string
+
+	if model.Nickname != "" {
+		name += model.Nickname
+
+		if model.Firstname != "" {
+			name += " (" + model.Firstname
+		}
+
+		if model.Lastname != "" {
+			name += " " + model.Lastname + ")"
+		} else {
+			name += ")"
+		}
+	} else {
+		name = model.Firstname
+
+		if model.Lastname != "" {
+			name += " " + model.Lastname
+		}
+	}
+
+	return name
 }
