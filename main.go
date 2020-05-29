@@ -1,7 +1,7 @@
 package main
 
 import (
-	"gobirthday/cmd"
+	"github.com/fallais/gobirthday/cmd"
 )
 
 func main() {

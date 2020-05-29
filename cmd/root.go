@@ -4,8 +4,7 @@ import (
 	"fmt"
 	"os"
 
-	"gobirthday/internal"
-
+	"github.com/fallais/gobirthday/internal"
 	"github.com/sirupsen/logrus"
 	"github.com/spf13/cobra"
 )
