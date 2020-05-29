@@ -15,10 +15,10 @@ import (
 const DefaultHeader = "Greets !"
 
 // DefaultBase is the default base message.
-const DefaultBase = "This is the birthay of [contact] !"
+const DefaultBase = "This is the birthay of {{contact}} !"
 
 // DefaultAge is the default age message.
-const DefaultAge = "[age] years old ! :)"
+const DefaultAge = "{{age}} years old ! :)"
 
 // DefaultFooter is the default footer message.
 const DefaultFooter = "Bye !"
@@ -27,7 +27,7 @@ const DefaultFooter = "Bye !"
 // Structure
 //------------------------------------------------------------------------------
 
-// GoBirthday is a birthday reminder that helps you to not forget your loved ones.
+// GoBirthday is a birthday reminder that reminds you all birthdays that you need to wish.
 type GoBirthday struct {
 	contacts             []*models.Contact
 	notifiers            []notifiers.Notifier
@@ -40,14 +40,18 @@ type GoBirthday struct {
 // Factory
 //------------------------------------------------------------------------------
 
-// NewGoBirthday returns new GoBirthday.
-func NewGoBirthday(leapYearsEnabled bool, leapYearsMode string, notificationTemplate map[string]string, contacts []*models.Contact, notifiers []notifiers.Notifier) *GoBirthday {
+// New returns new GoBirthday.
+func New(leapYearsEnabled bool, leapYearsMode string, notificationTemplate map[string]string, contacts []*models.Contact, notifiers []notifiers.Notifier) *GoBirthday {
 	gb := &GoBirthday{
 		contacts:             contacts,
 		notifiers:            notifiers,
 		notificationTemplate: notificationTemplate,
 		leapYearsEnabled:     leapYearsEnabled,
 		leapYearsMode:        leapYearsMode,
+	}
+
+	if notificationTemplate == nil {
+		notificationTemplate = make(map[string]string)
 	}
 
 	// Check the template
@@ -89,24 +93,7 @@ func (gb *GoBirthday) Notify() {
 			}).Infoln("Birthday to wish !")
 
 			// Prepare the message
-			message := ""
-
-			// Add header
-			message += gb.notificationTemplate["header"]
-			message += " "
-
-			// Add base
-			message += gb.notificationTemplate["base"]
-			message += " "
-
-			// Add age if not null
-			if contact.GetAge() != 0 {
-				message += gb.notificationTemplate["age"]
-				message += " "
-			}
-
-			// Add footer
-			message += gb.notificationTemplate["footer"]
+			message := gb.prepareMessage(contact)
 
 			// Replace values
 			r := strings.NewReplacer("{{contact}}", contact.GetName(), "{{age}}", strconv.Itoa(contact.GetAge()))
@@ -175,4 +162,27 @@ func (gb *GoBirthday) NbContacts() int {
 // NbNotifiers return the number of notifiers.
 func (gb *GoBirthday) NbNotifiers() int {
 	return len(gb.notifiers)
+}
+
+func (gb *GoBirthday) prepareMessage(contact *models.Contact) string {
+	var message string
+
+	// Add header
+	message += gb.notificationTemplate["header"]
+	message += " "
+
+	// Add base
+	message += gb.notificationTemplate["base"]
+	message += " "
+
+	// Add age if not null
+	if contact.GetAge() != 0 {
+		message += gb.notificationTemplate["age"]
+		message += " "
+	}
+
+	// Add footer
+	message += gb.notificationTemplate["footer"]
+
+	return message
 }
