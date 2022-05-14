@@ -41,18 +41,12 @@ func Run(cmd *cobra.Command, args []string) {
 	if err != nil {
 		logrus.WithError(err).Fatalln("Error when setup the contacts")
 	}
-	logrus.WithFields(logrus.Fields{
-		"nb_contacts": len(contacts),
-	}).Infoln("Successfully setup the contacts")
 
 	// Setup the things
 	things, err := setupThings()
 	if err != nil {
 		logrus.WithError(err).Fatalln("Error when setup the things")
 	}
-	logrus.WithFields(logrus.Fields{
-		"nb_things": len(things),
-	}).Infoln("Successfully setup the things")
 
 	// Setup the providers
 	providers, err := setupProviders()
@@ -71,7 +65,9 @@ func Run(cmd *cobra.Command, args []string) {
 	c := cron.New()
 
 	// Add birthdays to the CRON
-	logrus.Infoln("Adding birthdays to the CRON")
+	logrus.WithFields(logrus.Fields{
+		"nb_contacts": len(contacts),
+	}).Infoln("Adding birthdays to the CRON")
 	for _, contact := range contacts {
 		// Create the birthday
 		b := birthday.New(false, "", contact, providers)
@@ -87,7 +83,9 @@ func Run(cmd *cobra.Command, args []string) {
 	}
 
 	// Add things to the CRON
-	logrus.Infoln("Adding things to the CRON")
+	logrus.WithFields(logrus.Fields{
+		"nb_things": len(things),
+	}).Infoln("Adding things to the CRON")
 	for _, t := range things {
 		th := thing.New(t.Name, t.When, providers)
 
