@@ -1,3 +1,6 @@
+[![Go Report Card](https://goreportcard.com/badge/github.com/fallais/hermes)](https://goreportcard.com/report/github.com/fallais/hermes)
+[![made-with-Go](https://img.shields.io/badge/Made%20with-Go-1f425f.svg)](http://golang.org)
+
 # Hermes
 
 ![Hermes](https://github.com/fallais/gobirthday/blob/master/assets/logo.png)
