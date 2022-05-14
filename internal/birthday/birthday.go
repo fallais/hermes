@@ -6,7 +6,8 @@ import (
 	"strings"
 	"time"
 
-	"github.com/fallais/gobirthday/internal/models"
+	"hermes/internal/models"
+
 	"github.com/fallais/gonotify/pkg/notifiers"
 	"github.com/sirupsen/logrus"
 )

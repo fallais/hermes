@@ -6,7 +6,8 @@ import (
 	"os"
 	"os/signal"
 
-	"github.com/fallais/gobirthday/internal/birthday"
+	"hermes/internal/birthday"
+
 	"github.com/robfig/cron"
 	"github.com/sirupsen/logrus"
 	"github.com/spf13/cobra"

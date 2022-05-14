@@ -4,7 +4,7 @@ import (
 	"testing"
 	"time"
 
-	"github.com/fallais/gobirthday/internal/models"
+	"hermes/internal/models"
 )
 
 func TestBirthday(t *testing.T) {

@@ -1,7 +1,7 @@
 package main
 
 import (
-	"github.com/fallais/gobirthday/cmd"
+	"hermes/cmd"
 )
 
 func main() {

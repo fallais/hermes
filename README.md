@@ -1,14 +1,25 @@
-# GoBirthday
+# Hermes
 
-![Birthday](https://github.com/fallais/gobirthday/blob/master/assets/gobirthday.png)
+![Hermes](https://github.com/fallais/gobirthday/blob/master/assets/logo.png)
 
-**GoBirthday** is a tool written in **Go** that reminds you all birthdays that you need to wish ! It uses the [gonotify](https://github.com/fallais/gonotify) library for the notifications.
+**Hermes** is a tool written in **Go** that reminds you things that you have to do in your day-to-day life !
+
+> Disclaimer : the project has been **renamed** ! It was previously **GoBirthday** but the name was not fully accurate because the aim of the tool is to help you being notify of everything, not only birthday.
 
 ## Why
 
-You do not have a Facebook account ? You do not have a smartphone ? So you do not wish any more birthday, except for your parents, do you ?
+You do not have a Facebook account ? So you do not wish any more birthday, except for your parents, do you ?  
+You do not have a smartphone ? So you can't use the Google Agenda to reminds you things you have to do, can you ?
 
 Right, but you have Docker and you love Golang ? This software is for you !
+
+## Concept
+
+The two things that you can be notified about are :
+ - Birthday
+ - Task
+
+The **birthday** will occur once per year, and a **task** is something simple that you have to remind, for example, taking out the trash every week.
 
 ### What about the leap years
 

@@ -3,7 +3,8 @@ package internal
 import (
 	"fmt"
 
-	"github.com/fallais/gobirthday/internal/models"
+	"hermes/internal/models"
+
 	"github.com/fallais/gonotify/pkg/notifiers"
 	"github.com/fallais/gonotify/pkg/notifiers/email"
 	"github.com/fallais/gonotify/pkg/notifiers/sms/free"

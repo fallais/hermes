@@ -4,14 +4,15 @@ import (
 	"fmt"
 	"os"
 
-	"github.com/fallais/gobirthday/internal"
+	"hermes/internal"
+
 	"github.com/sirupsen/logrus"
 	"github.com/spf13/cobra"
 )
 
 var rootCmd = &cobra.Command{
-	Use:               "gobirthday",
-	Short:             "GoBirthday is a tool written in Go that reminds you all birthdays that you need to wish !",
+	Use:               "hermes",
+	Short:             "Hermes is a tool written in Go that reminds you things you have to do and birthday !",
 	Long:              ``,
 	PersistentPreRunE: persistentPreRunE,
 	Run:               internal.Run,
