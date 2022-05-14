@@ -4,8 +4,8 @@ package models
 // Structure
 //------------------------------------------------------------------------------
 
-// Thing is a thing that has to be done.
+// Thing is something that has to be done.
 type Thing struct {
-	Name string
-	When string
+	Name string `mapstructure:"name"`
+	When string `mapstructure:"when"`
 }

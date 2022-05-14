@@ -1,9 +1,12 @@
-package thing
+package birthday
 
 import (
 	"bytes"
+	"fmt"
 	"html/template"
 
+	"hermes/internal/models"
+	"hermes/internal/reminder"
 	"hermes/pkg/notifiers"
 
 	"github.com/sirupsen/logrus"
@@ -19,11 +22,12 @@ const DefaultMinute = 30
 // Structure
 //------------------------------------------------------------------------------
 
-// Thing is something that has to be done.
-type Thing struct {
-	name      string
-	when      string
-	notifiers []notifiers.Notifier
+// Birthday is the birthday to wish.
+type Birthday struct {
+	contact          *models.Contact
+	notifiers        []notifiers.Notifier
+	leapYearsEnabled bool
+	leapYearsMode    string
 }
 
 //------------------------------------------------------------------------------
@@ -31,11 +35,12 @@ type Thing struct {
 //------------------------------------------------------------------------------
 
 // New returns new GoBirthday.
-func New(name, when string, notifiers []notifiers.Notifier) *Thing {
-	gb := &Thing{
-		name:      name,
-		when:      when,
-		notifiers: notifiers,
+func New(leapYearsEnabled bool, leapYearsMode string, contact *models.Contact, notifiers []notifiers.Notifier) reminder.Reminder {
+	gb := &Birthday{
+		contact:          contact,
+		notifiers:        notifiers,
+		leapYearsEnabled: leapYearsEnabled,
+		leapYearsMode:    leapYearsMode,
 	}
 
 	return gb
@@ -46,14 +51,14 @@ func New(name, when string, notifiers []notifiers.Notifier) *Thing {
 //------------------------------------------------------------------------------
 
 // GetCRONExpression returns the calculated CRON expression for the birthday.
-func (job *Thing) GetCRONExpression() string {
-	return job.when
+func (gb *Birthday) GetCRONExpression() string {
+	return fmt.Sprintf("%d %d %d %d *", DefaultMinute, DefaultHour, gb.contact.Birthdate.Day(), gb.contact.Birthdate.Month())
 }
 
 // Run is the convenient function for notify.
-func (job *Thing) Run() {
+func (gb *Birthday) Run() {
 	// Parse the template
-	tmpl, err := template.New("thing").Parse(MessageTemplate)
+	tmpl, err := template.New("birthday").Parse(DefaultTemplate)
 	if err != nil {
 		logrus.WithError(err).Errorln("error while parsing template")
 		return
@@ -64,7 +69,8 @@ func (job *Thing) Run() {
 
 	// Prepare the data
 	data := TemplateData{
-		Thing: job.name,
+		contact: gb.contact.GetName(),
+		age:     gb.contact.GetAge(),
 	}
 
 	// Execute the template with data
@@ -75,7 +81,7 @@ func (job *Thing) Run() {
 	}
 
 	// Send all the notifications
-	for _, notifier := range job.notifiers {
+	for _, notifier := range gb.notifiers {
 		logrus.WithFields(logrus.Fields{
 			"notifier": notifier.Name(),
 		}).Infoln("Sending the notification")

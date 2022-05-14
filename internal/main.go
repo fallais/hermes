@@ -6,8 +6,8 @@ import (
 	"os"
 	"os/signal"
 
-	"hermes/internal/job/birthday"
-	"hermes/internal/job/thing"
+	"hermes/internal/reminder/birthday"
+	"hermes/internal/reminder/thing"
 
 	"github.com/robfig/cron/v3"
 	"github.com/sirupsen/logrus"

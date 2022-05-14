@@ -1,11 +1,10 @@
-package birthday
+package thing
 
 import (
 	"bytes"
-	"fmt"
 	"html/template"
 
-	"hermes/internal/models"
+	"hermes/internal/reminder"
 	"hermes/pkg/notifiers"
 
 	"github.com/sirupsen/logrus"
@@ -21,12 +20,11 @@ const DefaultMinute = 30
 // Structure
 //------------------------------------------------------------------------------
 
-// Birthday is the birthday to wish.
-type Birthday struct {
-	contact          *models.Contact
-	notifiers        []notifiers.Notifier
-	leapYearsEnabled bool
-	leapYearsMode    string
+// A thing is something that has to be done, very basically.
+type thing struct {
+	name      string
+	when      string
+	notifiers []notifiers.Notifier
 }
 
 //------------------------------------------------------------------------------
@@ -34,15 +32,14 @@ type Birthday struct {
 //------------------------------------------------------------------------------
 
 // New returns new GoBirthday.
-func New(leapYearsEnabled bool, leapYearsMode string, contact *models.Contact, notifiers []notifiers.Notifier) *Birthday {
-	gb := &Birthday{
-		contact:          contact,
-		notifiers:        notifiers,
-		leapYearsEnabled: leapYearsEnabled,
-		leapYearsMode:    leapYearsMode,
+func New(name, when string, notifiers []notifiers.Notifier) reminder.Reminder {
+	thing := &thing{
+		name:      name,
+		when:      when,
+		notifiers: notifiers,
 	}
 
-	return gb
+	return thing
 }
 
 //------------------------------------------------------------------------------
@@ -50,14 +47,14 @@ func New(leapYearsEnabled bool, leapYearsMode string, contact *models.Contact, n
 //------------------------------------------------------------------------------
 
 // GetCRONExpression returns the calculated CRON expression for the birthday.
-func (gb *Birthday) GetCRONExpression() string {
-	return fmt.Sprintf("%d %d %d %d *", DefaultMinute, DefaultHour, gb.contact.Birthdate.Day(), gb.contact.Birthdate.Month())
+func (reminder *thing) GetCRONExpression() string {
+	return reminder.when
 }
 
 // Run is the convenient function for notify.
-func (gb *Birthday) Run() {
+func (reminder *thing) Run() {
 	// Parse the template
-	tmpl, err := template.New("birthday").Parse(DefaultTemplate)
+	tmpl, err := template.New("thing").Parse(MessageTemplate)
 	if err != nil {
 		logrus.WithError(err).Errorln("error while parsing template")
 		return
@@ -68,8 +65,7 @@ func (gb *Birthday) Run() {
 
 	// Prepare the data
 	data := TemplateData{
-		contact: gb.contact.GetName(),
-		age:     gb.contact.GetAge(),
+		Thing: reminder.name,
 	}
 
 	// Execute the template with data
@@ -80,7 +76,7 @@ func (gb *Birthday) Run() {
 	}
 
 	// Send all the notifications
-	for _, notifier := range gb.notifiers {
+	for _, notifier := range reminder.notifiers {
 		logrus.WithFields(logrus.Fields{
 			"notifier": notifier.Name(),
 		}).Infoln("Sending the notification")
