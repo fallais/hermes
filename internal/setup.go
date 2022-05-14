@@ -99,19 +99,17 @@ func setupProviders() ([]notifiers.Notifier, error) {
 			case "free":
 				freeProvider := free.NewNotifier(configProvider.Settings)
 				providers = append(providers, freeProvider)
-				break
 			case "orange":
 				orangeProvider := orange.NewNotifier(configProvider.Settings)
 				providers = append(providers, orangeProvider)
 			default:
-				return nil, fmt.Errorf("Wrong vendor of SMS provider : %s", configProvider.Vendor)
+				return nil, fmt.Errorf("wrong vendor of SMS provider : %s", configProvider.Vendor)
 			}
 		case "email":
 			emailProvider := email.NewNotifier(configProvider.Settings)
 			providers = append(providers, emailProvider)
-			break
 		default:
-			return nil, fmt.Errorf("Wrong type of provider : %s", configProvider.Type)
+			return nil, fmt.Errorf("wrong type of provider : %s", configProvider.Type)
 		}
 	}
 
