@@ -34,16 +34,10 @@ The configuration file must be as follow, it must be provided with `--config` fl
 
 ```yaml
 general:
-  cron_exp: "0 30 14 * * *"
   run_on_startup: true
   leap_years:
     is_enabled: true
     mode: before
-  notification_template:
-    header: Hey !
-    base: This is the birthday of {{contact}} !
-    age: "{{age}} years old ! :)"
-    footer: See you !
 
 contacts:
   - firstname: "Daniel"
@@ -55,6 +49,10 @@ contacts:
   - firstname: "John"
     lastname: "Doe"
     birthdate: "08/04/1951"
+
+things:
+  - name: "Sortir les poubelles"
+    when: "30 19 * * WED"
 
 providers:
   - type: "sms"
