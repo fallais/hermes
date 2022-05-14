@@ -1,7 +1,7 @@
 package birthday
 
-// MessageTemplate is the birthday message template.
-const MessageTemplate = `
+// DefaultTemplate is the default birthday message template.
+const DefaultTemplate = `
 Greets !
 
 This is the birthay of {{ .contact }} !

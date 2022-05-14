@@ -6,8 +6,8 @@ import (
 	"html/template"
 
 	"hermes/internal/models"
+	"hermes/pkg/notifiers"
 
-	"github.com/fallais/gonotify/pkg/notifiers"
 	"github.com/sirupsen/logrus"
 )
 
@@ -57,7 +57,7 @@ func (gb *Birthday) GetCRONExpression() string {
 // Run is the convenient function for notify.
 func (gb *Birthday) Run() {
 	// Parse the template
-	tmpl, err := template.New("birthday").Parse(MessageTemplate)
+	tmpl, err := template.New("birthday").Parse(DefaultTemplate)
 	if err != nil {
 		logrus.WithError(err).Errorln("error while parsing template")
 		return

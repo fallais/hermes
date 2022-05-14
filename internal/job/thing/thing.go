@@ -4,7 +4,8 @@ import (
 	"bytes"
 	"html/template"
 
-	"github.com/fallais/gonotify/pkg/notifiers"
+	"hermes/pkg/notifiers"
+
 	"github.com/sirupsen/logrus"
 )
 

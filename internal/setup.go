@@ -5,10 +5,11 @@ import (
 
 	"hermes/internal/models"
 
-	"github.com/fallais/gonotify/pkg/notifiers"
-	"github.com/fallais/gonotify/pkg/notifiers/email"
-	"github.com/fallais/gonotify/pkg/notifiers/sms/free"
-	"github.com/fallais/gonotify/pkg/notifiers/sms/orange"
+	"hermes/pkg/notifiers"
+	"hermes/pkg/notifiers/email"
+	"hermes/pkg/notifiers/sms/free"
+	"hermes/pkg/notifiers/sms/orange"
+
 	"github.com/spf13/viper"
 )
 
