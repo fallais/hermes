@@ -3,7 +3,6 @@ module hermes
 go 1.18
 
 require (
-	github.com/fallais/gobirthday v0.0.0-20200529102256-ef99f3bd355b
 	github.com/fallais/gonotify v0.0.0-20200527150155-2f41559b9629
 	github.com/robfig/cron v1.2.0
 	github.com/sirupsen/logrus v1.8.1

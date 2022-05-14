@@ -44,6 +44,9 @@ func Run(cmd *cobra.Command, args []string) {
 		"nb_contacts": len(contacts),
 	}).Infoln("Successfully setup the contacts")
 
+	// Setup the tasks
+	// TODO
+
 	// Setup the providers
 	providers, err := setupProviders()
 	if err != nil {
@@ -53,31 +56,21 @@ func Run(cmd *cobra.Command, args []string) {
 		"nb_providers": len(providers),
 	}).Infoln("Successfully setup the providers")
 
-	// Parse the contacts file
-	logrus.WithFields(logrus.Fields{
-		"cron_exp":          viper.GetString("general.cron_exp"),
-		"handle_leap_years": viper.GetBool("general.handle_leap_years"),
-		"run_on_startup":    viper.GetBool("general.run_on_startup"),
-	}).Infoln("Creating the instance")
-	gb := birthday.New(viper.GetBool("general.leap_years.is_enabled"), viper.GetString("general.leap_years.mode"), viper.GetStringMapString("general.notification_template"), contacts, providers)
-	logrus.Infoln("Successfully created the instance")
-
 	// Create the channels
 	signalChan := make(chan os.Signal, 1)
 	cleanupDone := make(chan bool)
 
-	// Run on startup
-	if viper.GetBool("general.run_on_startup") {
-		gb.Notify()
-	}
-
+	// Create the CRON
 	c := cron.New()
 
-	// Add the function to the CRON
+	// Add birthdays to the CRON
 	logrus.WithFields(logrus.Fields{
 		"cron_exp": viper.GetString("general.cron_exp"),
-	}).Infoln("Adding function to the CRON")
-	c.AddFunc(viper.GetString("general.cron_exp"), gb.Notify)
+	}).Infoln("Adding birthdays to the CRON")
+	for _, contact := range contacts {
+		birthday := birthday.New(false, "", contact, providers)
+		c.AddFunc(birthday.GetCRONExpression(), birthday.Run)
+	}
 
 	// Start the CRON
 	logrus.Infoln("Starting the CRON")
