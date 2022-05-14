@@ -6,9 +6,10 @@ import (
 	"os"
 	"os/signal"
 
-	"hermes/internal/birthday"
+	"hermes/internal/job/birthday"
+	"hermes/internal/job/thing"
 
-	"github.com/robfig/cron"
+	"github.com/robfig/cron/v3"
 	"github.com/sirupsen/logrus"
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
@@ -44,8 +45,14 @@ func Run(cmd *cobra.Command, args []string) {
 		"nb_contacts": len(contacts),
 	}).Infoln("Successfully setup the contacts")
 
-	// Setup the tasks
-	// TODO
+	// Setup the things
+	things, err := setupThings()
+	if err != nil {
+		logrus.WithError(err).Fatalln("Error when setup the things")
+	}
+	logrus.WithFields(logrus.Fields{
+		"nb_things": len(things),
+	}).Infoln("Successfully setup the things")
 
 	// Setup the providers
 	providers, err := setupProviders()
@@ -64,17 +71,42 @@ func Run(cmd *cobra.Command, args []string) {
 	c := cron.New()
 
 	// Add birthdays to the CRON
-	logrus.WithFields(logrus.Fields{
-		"cron_exp": viper.GetString("general.cron_exp"),
-	}).Infoln("Adding birthdays to the CRON")
+	logrus.Infoln("Adding birthdays to the CRON")
 	for _, contact := range contacts {
-		birthday := birthday.New(false, "", contact, providers)
-		c.AddFunc(birthday.GetCRONExpression(), birthday.Run)
+		// Create the birthday
+		b := birthday.New(false, "", contact, providers)
+
+		// Add the birthday
+		logrus.WithFields(logrus.Fields{
+			"contact": contact.GetName(),
+		}).Infoln("Adding birthday to the CRON")
+		_, err := c.AddJob(b.GetCRONExpression(), b)
+		if err != nil {
+			logrus.WithError(err).Fatalln("error while adding the birthday to the CRON")
+		}
+	}
+
+	// Add things to the CRON
+	logrus.Infoln("Adding things to the CRON")
+	for _, t := range things {
+		th := thing.New(t.Name, t.When, providers)
+
+		logrus.WithFields(logrus.Fields{
+			"name": t.Name,
+			"when": t.When,
+		}).Infoln("Adding the thing to the CRON")
+		_, err := c.AddJob(th.GetCRONExpression(), th)
+		if err != nil {
+			logrus.WithError(err).Fatalln("error while adding the thing to the CRON")
+		}
 	}
 
 	// Start the CRON
 	logrus.Infoln("Starting the CRON")
 	c.Start()
+	logrus.WithFields(logrus.Fields{
+		"nb_entries": len(c.Entries()),
+	}).Infoln("CRON has been started")
 
 	// Handle the kill signals
 	signal.Notify(signalChan, os.Kill, os.Interrupt)
@@ -88,8 +120,6 @@ func Run(cmd *cobra.Command, args []string) {
 			cleanupDone <- true
 		}
 	}()
-
-	logrus.Infoln("Waiting for birthdays to wish")
 
 	<-cleanupDone
 }

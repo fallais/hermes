@@ -11,20 +11,22 @@ import (
 	"github.com/sirupsen/logrus"
 )
 
+// DefaultHour is the default hour for wishing the birthday.
+const DefaultHour = 10
+
+// DefaultHour is the default minute for wishing the birthday.
+const DefaultMinute = 30
+
 //------------------------------------------------------------------------------
 // Structure
 //------------------------------------------------------------------------------
 
+// Birthday is the birthday to wish.
 type Birthday struct {
 	contact          *models.Contact
 	notifiers        []notifiers.Notifier
 	leapYearsEnabled bool
 	leapYearsMode    string
-}
-
-type data struct {
-	contact string
-	age     int
 }
 
 //------------------------------------------------------------------------------
@@ -49,7 +51,7 @@ func New(leapYearsEnabled bool, leapYearsMode string, contact *models.Contact, n
 
 // GetCRONExpression returns the calculated CRON expression for the birthday.
 func (gb *Birthday) GetCRONExpression() string {
-	return fmt.Sprintf("0 0 %d %d *", gb.contact.Birthdate.Day(), gb.contact.Birthdate.Month())
+	return fmt.Sprintf("%d %d %d %d *", DefaultMinute, DefaultHour, gb.contact.Birthdate.Day(), gb.contact.Birthdate.Month())
 }
 
 // Run is the convenient function for notify.
@@ -65,7 +67,7 @@ func (gb *Birthday) Run() {
 	buf := &bytes.Buffer{}
 
 	// Prepare the data
-	data := data{
+	data := TemplateData{
 		contact: gb.contact.GetName(),
 		age:     gb.contact.GetAge(),
 	}
@@ -82,7 +84,7 @@ func (gb *Birthday) Run() {
 		logrus.WithFields(logrus.Fields{
 			"notifier": notifier.Name(),
 		}).Infoln("Sending the notification")
-		err := notifier.Notify(fmt.Sprintf("Do not forget your friend %s born on a leap year !", gb.contact.Firstname))
+		err := notifier.Notify(buf.String())
 		if err != nil {
 			logrus.WithFields(logrus.Fields{
 				"notifier": notifier.Name(),

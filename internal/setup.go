@@ -21,6 +21,12 @@ type Contact struct {
 	Description string `json:"description"`
 }
 
+// Thing is a thng.
+type Thing struct {
+	Name string `mapstructure:"name"`
+	When string `mapstructure:"when"`
+}
+
 // Provider is a provider.
 type Provider struct {
 	Type     string                 `json:"type"`
@@ -50,6 +56,30 @@ func setupContacts() ([]*models.Contact, error) {
 	}
 
 	return contacts, nil
+}
+
+func setupThings() ([]*models.Thing, error) {
+	var things []*models.Thing
+	var configThings []*Thing
+
+	err := viper.UnmarshalKey("things", &configThings)
+	if err != nil {
+		return nil, err
+	}
+
+	// Process the things
+	for _, configThing := range configThings {
+		// Create the contact
+		c := &models.Thing{
+			Name: configThing.Name,
+			When: configThing.When,
+		}
+
+		// Add the contact
+		things = append(things, c)
+	}
+
+	return things, nil
 }
 
 func setupProviders() ([]notifiers.Notifier, error) {
