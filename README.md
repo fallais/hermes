@@ -16,15 +16,11 @@ If you answer *yes* to one of theses questions, you need this tool:
 
 ## Concept
 
-The two things that you can be notified about are :
+The tool introduces the **Reminder**, actually there are two kinds of reminders :
  - Birthday
- - Task
+ - Thing
 
-The **birthday** will occur once per year, and a **task** is something simple that you have to remind, for example, taking out the trash every week.
-
-### What about the leap years
-
-Hum, you have a friend who was born the 29 of February, that is sad, because you wish it only once every four years. Do not worry, if you want to, you will be noticed the **28th of February** or **1st of March** (depends on how superstitious you are) !
+The **Birthday** will occur once per year, and a **Thing** is something simple that you have to remind, for example, taking out the trash every week.
 
 ## Configuration file
 
@@ -60,6 +56,10 @@ providers:
       pass: "xxxxxxx"
 ```
 
+### What about the leap years
+
+Hum, you have a friend who was born the 29 of February, that is sad, because you wish it only once every four years. Do not worry, if you want to, you will be noticed the **28th of February** or **1st of March** (depends on how superstitious you are) !
+
 ### Contacts
 
 A **contact** is defined by :
@@ -87,23 +87,21 @@ A **notifier** is used to send notifications, it could be one of the following :
   - IFTTT *(not yet)*
 - etc..
 
-### CRON
+### Things
 
-A **CRON expression** must be provided if you want to control the time when you receive the notification. If you need help with CRON expression : [CronTabGuru](https://crontab.guru/)
-
-> **Attention** : a **second** must must added before the CRON expression because of the library used (`github.com/robfig/cron`). For example : `0 50 15 * * *`
+A thing is declared by a **name** and a **when**. The **when** is basically a CRON expression. If you need help with CRON expression : [CronTabGuru](https://crontab.guru/)
 
 ## Usage
 
 ### As a software
 
-It can be used as follow : `gobirthday --config config.yaml`
+It can be used as follow : `hermes --config config.yaml`
 
 ### As a Docker container
 
 It can also be deployed in a Docker container, it is only 20MB.
 
-`docker run -d --name gobirthday --volume config.yaml:/config.yaml fallais/gobirthday`
+`docker run -d --name hermes --volume config.yaml:/config.yaml fallais/hermes`
 
 ### With docker-compose
 
@@ -114,15 +112,15 @@ version: "3"
 
 services:
   gobirthday:
-    image: fallais/gobirthday
-    container_name: gobirthday
+    image: fallais/hermes
+    container_name: hermes
     restart: always
     volumes:
       - config.yaml:/config.yaml
     networks:
       main:
         aliases:
-          - gobirthday
+          - hermes
   
   smtp:
     image: namshi/smtp

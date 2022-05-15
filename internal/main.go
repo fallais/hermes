@@ -3,8 +3,7 @@ package internal
 import (
 	"bytes"
 	"io/ioutil"
-	"os"
-	"os/signal"
+	"net/http"
 
 	"hermes/internal/reminder/birthday"
 	"hermes/internal/reminder/thing"
@@ -57,10 +56,6 @@ func Run(cmd *cobra.Command, args []string) {
 		"nb_providers": len(providers),
 	}).Infoln("Successfully setup the providers")
 
-	// Create the channels
-	signalChan := make(chan os.Signal, 1)
-	cleanupDone := make(chan bool)
-
 	// Create the CRON
 	c := cron.New()
 
@@ -106,18 +101,12 @@ func Run(cmd *cobra.Command, args []string) {
 		"nb_entries": len(c.Entries()),
 	}).Infoln("CRON has been started")
 
-	// Handle the kill signals
-	signal.Notify(signalChan, os.Kill, os.Interrupt)
-	go func() {
-		for range signalChan {
-			logrus.Infoln("Received an interrupt, stopping...")
-
-			// Stop the CRON
-			c.Stop()
-
-			cleanupDone <- true
-		}
-	}()
-
-	<-cleanupDone
+	// Serve
+	logrus.WithFields(logrus.Fields{
+		"port": ":8000",
+	}).Infoln("Starting the Web server")
+	err = http.ListenAndServe(":8000", nil)
+	if err != nil {
+		logrus.WithError(err).Fatalln("Error while starting the Web server")
+	}
 }
