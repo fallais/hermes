@@ -9,12 +9,10 @@
 
 > Disclaimer : the project has been **renamed** ! It was previously **GoBirthday** but the name was not fully accurate because the aim of the tool is to help you being notify of everything, not only birthday.
 
-## Why
+If you answer *yes* to one of theses questions, you need this tool:
 
-You do not have a Facebook account ? So you do not wish any more birthday, except for your parents, do you ?  
-You do not have a smartphone ? So you can't use the Google Agenda to reminds you things you have to do, can you ?
-
-Right, but you have Docker and you love Golang ? This software is for you !
+- You do not have a Facebook account ? So you do not wish any more birthday, except for your parents, do you ?  
+- You do not have a smartphone ? So you can't use the Google Agenda to reminds you things you have to do, can you ?
 
 ## Concept
 
@@ -60,18 +58,6 @@ providers:
     settings:
       user: "1234568797"
       pass: "xxxxxxx"
-```
-
-### Notification template
-
-**notification_template** is used to configure the message you want to receive. Two variables must be provided : `{{contact}}` and `{{age}}`. The template is divided in for parts. They will be concatenated in one large message.
-
-```yaml
-notification_template:
-    header: Hey !
-    base: This is the birthday of {{contact}} !
-    age: "{{age}} years old ! :)"
-    footer: See you !
 ```
 
 ### Contacts
