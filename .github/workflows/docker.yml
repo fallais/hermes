@@ -1,8 +1,8 @@
 name: Publish Docker image
 
 on:
-  release:
-    types: [published]
+  push:
+    tags: [v*]
 
 jobs:
   push_to_registry:
@@ -27,7 +27,7 @@ jobs:
       - name: Build and push Docker image
         uses: docker/build-push-action@v3
         with:
-          context: .
+          context: {{defaultContext}}:build
           push: true
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
