@@ -65,7 +65,7 @@ func Run(cmd *cobra.Command, args []string) {
 	}).Infoln("Adding birthdays to the CRON")
 	for _, contact := range contacts {
 		// Create the birthday
-		b := birthday.New(false, "", contact, providers)
+		b := birthday.New(false, "", *contact, providers)
 
 		// Add the birthday
 		logrus.WithFields(logrus.Fields{

@@ -32,7 +32,7 @@ func TestGetAge(t *testing.T) {
 	if err != nil {
 		t.Fatalf("should not err: %s", err)
 	}
-	if contact.GetAge() != 90 {
+	if contact.GetAge() != 92 {
 		t.Errorf("The age is incorrect : %d. It should be : %d.", contact.GetAge(), 89)
 		t.Fail()
 	}
@@ -48,7 +48,7 @@ func TestGetAge(t *testing.T) {
 	}
 
 	// Create the contact with a bad year
-	contact, err = NewContact("John", "Doe", "Jojo", "Best friend", "01/01/193")
+	_, err = NewContact("John", "Doe", "Jojo", "Best friend", "01/01/193")
 	if err == nil {
 		t.Errorf("should err: %s", err)
 		t.Fail()

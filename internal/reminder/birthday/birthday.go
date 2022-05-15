@@ -24,7 +24,7 @@ const DefaultMinute = 30
 
 // Birthday is the birthday to wish.
 type Birthday struct {
-	contact          *models.Contact
+	contact          models.Contact
 	notifiers        []notifiers.Notifier
 	leapYearsEnabled bool
 	leapYearsMode    string
@@ -35,7 +35,7 @@ type Birthday struct {
 //------------------------------------------------------------------------------
 
 // New returns new GoBirthday.
-func New(leapYearsEnabled bool, leapYearsMode string, contact *models.Contact, notifiers []notifiers.Notifier) reminder.Reminder {
+func New(leapYearsEnabled bool, leapYearsMode string, contact models.Contact, notifiers []notifiers.Notifier) reminder.Reminder {
 	gb := &Birthday{
 		contact:          contact,
 		notifiers:        notifiers,
